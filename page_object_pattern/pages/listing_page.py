@@ -2,6 +2,7 @@ import time
 from re import match
 import logging
 
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.by import By
@@ -10,7 +11,7 @@ class ListingPage:
 
     def __init__(self, driver):
         self.driver = driver
-        self.logger =
+        #self.logger =
         self.header_logo_class = 'm-header-1__logo-link'
         self.search_query_id = 'header_search_query'
         self.contact_call_class = 'm-header-1__contact-call'
@@ -72,6 +73,7 @@ class ListingPage:
         return pages_count, last_page
 
     def products_sort(self, type):
+        self.accept_cookie_policy()
         self.driver.find_element_by_class_name(self.sorting_container_class).click()
         wait = WebDriverWait(self.driver, 5)
         wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME,'c-select-field__list-holder')))
@@ -83,6 +85,31 @@ class ListingPage:
             titles = self.driver.find_elements_by_xpath(self.product_titles_xpath)
             return titles
 
+    def filter_by_price(self, price_min, price_max):
+        self.accept_cookie_policy()
+        self.driver.find_element_by_class_name(self.min_price_input_class).click()
+        self.driver.find_element_by_class_name(self.min_price_input_class).send_keys(Keys.BACK_SPACE*6)
+        self.driver.find_element_by_class_name(self.min_price_input_class).send_keys(price_min)
+        self.driver.find_element_by_class_name(self.max_price_input_class).click()
+        self.driver.find_element_by_class_name(self.max_price_input_class).send_keys(Keys.BACK_SPACE*6)
+        self.driver.find_element_by_class_name(self.max_price_input_class).send_keys(price_max)
+        self.driver.find_element_by_class_name(self.price_filter_button_class).click()
+        prices = []
+        try:
+            pages_count = self.driver.find_elements_by_class_name(self.pagination_module_class)
+            pages_count = int(pages_count[-1].text)
+        except:
+            prices = self.driver.find_elements_by_xpath(self.product_price_values_xpath)
+            return prices
+        for page in range(pages_count):
+            for price in self.driver.find_elements_by_xpath(self.product_price_values_xpath):
+                prices.append(price.text)
+            if page + 1 == pages_count:
+                return prices
+                break
+            self.driver.find_element_by_class_name(self.pagination_next_page_class).click()
+
+        time.sleep(2)
 
 
 

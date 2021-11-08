@@ -33,15 +33,26 @@ class ProductDetailPage:
         self.product_opinion_pagination_pages_class = 'm-pagination-1__page'
         self.product_opinion_next_page_button_class = 'm-pagination-1__nearby-page--next-opinions'
         self.product_opinion_last_page_button_class = 'm-pagination-1__page--last'
+        self.product_add_to_basket_id = 'product-card-add-to-card'
 
-    def set_variants(self, color, size):
+    def set_variants(self):
         self.driver.find_element_by_class_name(self.product_variant_color_class).click()
         self.driver.find_element_by_class_name(self.product_variant_size_class).click()
+        time.sleep(2)
 
     def add_to_wishlist(self):
         self.driver.find_element_by_class_name(self.product_add_to_wishlist_button_class).click()
-        productname = self.driver.find_element_by_class_name(self.product_title_class).text
-        return productname
+        product_name = self.driver.find_element_by_class_name(self.product_title_class).text
+        return product_name
+
+    def add_to_basket(self):
+        product_name = self.driver.find_element_by_class_name(self.product_title_class).text
+        add_to_basket_button = self.driver.find_element_by_id(self.product_add_to_basket_id).get_attribute('textContent')
+        if add_to_basket_button == 'Produkt niedostępny':
+            return add_to_basket_button
+        else:
+            self.driver.find_element_by_id(self.product_add_to_basket_id).click()
+            return product_name
 
     def add_opinion(self, name, opinion, stars):
         self.driver.find_element_by_class_name(self.product_write_opinion_class).click()

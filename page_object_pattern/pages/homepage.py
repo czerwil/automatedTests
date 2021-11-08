@@ -18,6 +18,7 @@ class Homepage:
         self.newsletter_submit_button_class = 'js-newsletter-trigger'
         self.news_container_class = 'm-news-panel-1__box'
         self.cookie_popup_accept_button_class = 'js-accept-cookie-alert-1'
+        self.newsletter_alert_span_xpath = '//*[@id="modal-aside-newsletter"]/div[2]/div[2]/div/form/label/span'
 
     def perform_search(self,query):
         self.driver.find_element_by_id(self.search_query_id).click()
@@ -25,6 +26,15 @@ class Homepage:
 
     def accept_cookie_policy(self):
         self.driver.find_element_by_class_name(self.cookie_popup_accept_button_class).click()
+
+    def subscribe_to_newsletter(self, email):
+        self.driver.find_element_by_class_name(self.newsletter_email_input_class).send_keys(email)
+        self.driver.find_element_by_class_name(self.newsletter_submit_button_class).click()
+        alert = self.driver.find_element_by_xpath(self.newsletter_alert_span_xpath)
+        time.sleep(1)
+        return alert
+
+
 
 
 
