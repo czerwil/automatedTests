@@ -1,6 +1,7 @@
 import time
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.common.by import By
 
 class ProductDetailPage:
 
@@ -14,8 +15,8 @@ class ProductDetailPage:
         self.product_old_price_class = 'm-product-data-2__price--old'
         self.product_promotional_price_class = 'm-product-data-2__price--promotion'
         self.product_variants_scope_class = 'js-variants-scope'
-        self.product_variant_color_class = 'm-product-data-2__colors'
-        self.product_variant_size_class = 'm-product-data-2__sizes'
+        self.product_variant_color_class = 'js-product-color'
+        self.product_variant_size_class = 'js-product-size'
         self.product_quantity_input_class = 'js-product-quantity'
         self.product_quantity_more_button_class = 'js-quantity-more'
         self.product_quantity_less_button_class = 'js-quantity-less'
@@ -33,7 +34,9 @@ class ProductDetailPage:
         self.product_opinion_pagination_pages_class = 'm-pagination-1__page'
         self.product_opinion_next_page_button_class = 'm-pagination-1__nearby-page--next-opinions'
         self.product_opinion_last_page_button_class = 'm-pagination-1__page--last'
-        self.product_add_to_basket_id = 'product-card-add-to-card'
+        self.product_add_to_basket_button_id = 'product-card-add-to-card'
+        self.product_add_to_basket_button_error_class = 'js-add-product-to-card-error'
+        self.product_add_to_basket_button_success_class = 'js-add-product-to-card-success'
 
     def set_variants(self):
         self.driver.find_element_by_class_name(self.product_variant_color_class).click()
@@ -46,13 +49,18 @@ class ProductDetailPage:
         return product_name
 
     def add_to_basket(self):
-        product_name = self.driver.find_element_by_class_name(self.product_title_class).text
-        add_to_basket_button = self.driver.find_element_by_id(self.product_add_to_basket_id).get_attribute('textContent')
-        if add_to_basket_button == 'Produkt niedostępny':
-            return add_to_basket_button
-        else:
-            self.driver.find_element_by_id(self.product_add_to_basket_id).click()
+        wait = WebDriverWait(self.driver, 3)
+        try:
+            product_name = self.driver.find_element_by_class_name(self.product_title_class).text
+            wait.until(expected_conditions.element_to_be_clickable((By.ID, self.product_add_to_basket_button_id)))
+            self.driver.find_element_by_id(self.product_add_to_basket_button_id).click()
+            time.sleep(1)
+            self.driver.find_element_by_class_name(self.product_add_to_basket_button_success_class).click()
             return product_name
+        except:
+            error_status = self.driver.find_element_by_class_name(self.product_add_to_basket_button_error_class).text
+            return error_status
+
 
     def add_opinion(self, name, opinion, stars):
         self.driver.find_element_by_class_name(self.product_write_opinion_class).click()

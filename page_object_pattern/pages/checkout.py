@@ -23,6 +23,13 @@ class CheckoutPage:
         self.cart_discount_code_input_class = 'js-cart-discount-input'
         self.cart_shipment_option_class = 'js-cart-shipment-option'
         self.cart_payment_option_class = 'js-cart-payment-option'
+        self.cart_product_title_class = 'c-table-product__title'
+
+
+    def get_product_data(self):
+            name = self.driver.find_element_by_class_name(self.cart_product_title_class).text
+            return name
+
 
 
 
