@@ -1,4 +1,5 @@
 import time
+from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.by import By
@@ -7,6 +8,7 @@ class ProductDetailPage:
 
     def __init__(self, driver):
         self.driver = driver
+        self.wishlist_button_id = 'header-wishlist'
         self.product_title_class = 'm-product-data-2__title'
         self.product_rating_class = 'm-product-data-2__rating'
         self.product_manufacturer_xpath = '/html/body/main/div[3]/div[1]/div/div/div[2]/div[1]/div[2]/div[2]/span/a'
@@ -37,6 +39,7 @@ class ProductDetailPage:
         self.product_add_to_basket_button_id = 'product-card-add-to-card'
         self.product_add_to_basket_button_error_class = 'js-add-product-to-card-error'
         self.product_add_to_basket_button_success_class = 'js-add-product-to-card-success'
+        self.product_added_to_wishlist_tooltip_text_class = 'js-check-tooltip-text'
 
     def set_variants(self):
         self.driver.find_element_by_class_name(self.product_variant_color_class).click()
@@ -44,9 +47,14 @@ class ProductDetailPage:
         time.sleep(2)
 
     def add_to_wishlist(self):
-        self.driver.find_element_by_class_name(self.product_add_to_wishlist_button_class).click()
+        wait = WebDriverWait(self.driver, 3)
         product_name = self.driver.find_element_by_class_name(self.product_title_class).text
-        return product_name
+        self.driver.find_element_by_class_name(self.product_add_to_wishlist_button_class).click()
+        wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.product_added_to_wishlist_tooltip_text_class)))
+        confirm_info = self.driver.find_element_by_class_name(self.product_added_to_wishlist_tooltip_text_class).text
+        self.driver.find_element_by_id(self.wishlist_button_id).click()
+        self.driver.find_element_by_link_text('Ulubione').click()
+        return confirm_info, product_name
 
     def add_to_basket(self):
         wait = WebDriverWait(self.driver, 3)
