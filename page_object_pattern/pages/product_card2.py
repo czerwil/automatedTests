@@ -1,4 +1,6 @@
 import time
+
+import logging
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
@@ -8,6 +10,7 @@ class ProductDetailPage:
 
     def __init__(self, driver):
         self.driver = driver
+        self.logger = logging.getLogger(__name__)
         self.wishlist_button_id = 'header-wishlist'
         self.product_title_class = 'm-product-data-2__title'
         self.product_rating_class = 'm-product-data-2__rating'
@@ -69,16 +72,18 @@ class ProductDetailPage:
             error_status = self.driver.find_element_by_class_name(self.product_add_to_basket_button_error_class).text
             return error_status
 
-
     def add_opinion(self, name, opinion, stars):
+        self.logger.info("Adding {stars} stars opinion with nickname {name}".format(stars=stars, name=name))
         self.driver.find_element_by_class_name(self.product_write_opinion_class).click()
         self.driver.find_element_by_name(self.product_opinion_name).send_keys(name)
         self.driver.find_element_by_name(self.product_opinion_captcha).send_keys('Warszawa')
+        self.logger.info("Adding opinion text: {}".format(opinion))
         self.driver.find_element_by_name(self.product_opinion_comment).send_keys(opinion)
         rating = self.driver.find_elements_by_class_name(self.product_stars_class)
         rating[stars].click()
 
     def send_opinion(self):
+        self.logger.info('Sending opinion')
         self.driver.find_element_by_class_name(self.product_send_opinion_button_class).click()
 
     def close_cookies_popup(self):
@@ -93,10 +98,12 @@ class ProductDetailPage:
                 break
             time.sleep(0.4)
             try:
+                self.logger.info(f"Going to page number {page+2}")
                 self.driver.find_element_by_class_name(self.product_opinion_next_page_button_class).click()
             except:
                 continue
         last_page = int(self.driver.find_element_by_class_name(self.product_opinion_last_page_button_class).text)
+        self.logger.info(f"Last page number is {last_page}")
         return last_page, pages_count
 
 

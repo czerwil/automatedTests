@@ -4,7 +4,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 from page_object_pattern.pages.product_card2 import ProductDetailPage
 
 
-
 class TestWriteOpinion:
 
     @pytest.fixture()
@@ -27,8 +26,4 @@ class TestWriteOpinion:
         pdp = ProductDetailPage(self.driver)
         pdp.close_cookies_popup()
         pages = pdp.pagination_of_opinions()
-        assert pages[0] == pages[1], "Błąd"
-
-
-
-
+        assert pages[0] == pages[1], "Błąd - nie można przejść do wszystkich stron paginacji opinii"

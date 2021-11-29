@@ -1,4 +1,6 @@
 import time
+
+import logging
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.keys import Keys
@@ -9,6 +11,7 @@ class Homepage:
 
     def __init__(self, driver):
         self.driver = driver
+        self.logger = logging.getLogger(__name__)
         self.header_logo_class = 'm-header-1__logo-link'
         self.search_query_id = 'header_search_query'
         self.contact_call_class = 'm-header-1__contact-call'
@@ -57,13 +60,17 @@ class Homepage:
 
     def sign_in(self, email, password):
         self.driver.find_element_by_id(self.account_button_id).click()
+        self.logger.info(f'Passing email address: {email} to email input)')
         self.driver.find_element_by_name(self.login_form_email_input_name).send_keys(email)
+        self.logger.info(f'Passing password: {password} to password input)')
         self.driver.find_element_by_name(self.login_form_password_input_name).send_keys(password)
+        self.logger.info('Sending login form')
         self.driver.find_element_by_class_name(self.login_confirm_button_class).click()
 
     def go_to_account_page(self):
-        time.sleep(3)
+        time.sleep(2)
         self.driver.find_element_by_id(self.account_button_id).click()
+        self.logger.info('Going to account settings page')
         self.driver.find_element_by_link_text(self.my_account_link_text).click()
         return self.driver.current_url
 
