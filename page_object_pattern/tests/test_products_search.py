@@ -80,7 +80,6 @@ class TestProductsSearch:
         listing = ListingPage(self.driver)
         prices = listing.filter_by_price(min, max)
         #pobierają się dwie ceny z produktu regularna i promocyjna - need fix
-        print(len(prices))
         for price in prices:
             price_value = float(price.replace(',', '.'))
             assert price_value >= min and price_value <= max, "Błąd w filtrowaniu po cenie"

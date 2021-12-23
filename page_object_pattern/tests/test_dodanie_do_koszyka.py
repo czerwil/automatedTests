@@ -22,9 +22,9 @@ class TestAddProductsToBasket:
         basket = CheckoutPage(self.driver)
         pdp.close_cookies_popup()
         pdp.set_variants()
-        product_name = pdp.add_to_basket()
-        basket_product_name = basket.get_product_data()
-        assert product_name == basket_product_name, "Nazwa produktu w koszyku jest nieprawidłowa"
+        pdp_data = pdp.add_to_basket()
+        basket_data = basket.get_product_data()
+        assert pdp_data == basket_data, "Nazwa produktu w koszyku jest nieprawidłowa"
 
 
 

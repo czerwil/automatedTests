@@ -28,7 +28,14 @@ class CheckoutPage:
 
     def get_product_data(self):
             name = self.driver.find_element_by_class_name(self.cart_product_title_class).text
-            return name
+            quantity = self.driver.find_element_by_class_name(self.cart_product_quantity_input_class).get_attribute('value')
+            try:
+                price = self.driver.find_element_by_class_name(self.cart_product_price_after_discount_class).text
+            except:
+                price = self.driver.find_element_by_class_name(self.cart_product_price_after_discount_class).text
+
+
+            return name,price,quantity
 
 
 

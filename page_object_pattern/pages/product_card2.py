@@ -22,7 +22,7 @@ class ProductDetailPage:
         self.product_variants_scope_class = 'js-variants-scope'
         self.product_variant_color_class = 'js-product-color'
         self.product_variant_size_class = 'js-product-size'
-        self.product_quantity_input_class = 'js-product-quantity'
+        self.product_quantity_input_class = 'c-quantity-field__input'
         self.product_quantity_more_button_class = 'js-quantity-more'
         self.product_quantity_less_button_class = 'js-quantity-less'
         self.product_ask_about_product_class = 'm-product-data-2__ask'
@@ -63,11 +63,13 @@ class ProductDetailPage:
         wait = WebDriverWait(self.driver, 3)
         try:
             product_name = self.driver.find_element_by_class_name(self.product_title_class).text
+            product_price = self.driver.find_element_by_class_name(self.product_prices_class).text
+            product_quantity = self.driver.find_element_by_class_name(self.product_quantity_input_class).get_attribute('value')
             wait.until(expected_conditions.element_to_be_clickable((By.ID, self.product_add_to_basket_button_id)))
             self.driver.find_element_by_id(self.product_add_to_basket_button_id).click()
             time.sleep(1)
             self.driver.find_element_by_class_name(self.product_add_to_basket_button_success_class).click()
-            return product_name
+            return product_name, product_price, product_quantity
         except:
             error_status = self.driver.find_element_by_class_name(self.product_add_to_basket_button_error_class).text
             return error_status
