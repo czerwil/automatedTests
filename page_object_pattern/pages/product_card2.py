@@ -12,6 +12,7 @@ class ProductDetailPage:
         self.driver = driver
         self.logger = logging.getLogger(__name__)
         self.wishlist_button_id = 'header-wishlist'
+        self.wishlist_count_class = 'js-display-wishlist-count'
         self.product_title_class = 'm-product-data-2__title'
         self.product_rating_class = 'm-product-data-2__rating'
         self.product_manufacturer_xpath = '/html/body/main/div[3]/div[1]/div/div/div[2]/div[1]/div[2]/div[2]/span/a'
@@ -54,10 +55,11 @@ class ProductDetailPage:
         product_name = self.driver.find_element_by_class_name(self.product_title_class).text
         self.driver.find_element_by_class_name(self.product_add_to_wishlist_button_class).click()
         wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.product_added_to_wishlist_tooltip_text_class)))
+        wishlist_count = self.driver.find_element_by_class_name(self.wishlist_count_class).text
         confirm_info = self.driver.find_element_by_class_name(self.product_added_to_wishlist_tooltip_text_class).text
         self.driver.find_element_by_id(self.wishlist_button_id).click()
         self.driver.find_element_by_link_text('Ulubione').click()
-        return confirm_info, product_name
+        return confirm_info, wishlist_count, product_name
 
     def add_to_basket(self):
         wait = WebDriverWait(self.driver, 3)

@@ -29,13 +29,25 @@ class TestAddToWishlist:
         self.driver.get('http://prototype.devsel.pl/p/13/182/m080-1')
         pdp = ProductDetailPage(self.driver)
         wishlist = WishlistPage(self.driver)
+        pdp.close_cookies_popup()
         pdp.set_variants()
         info = pdp.add_to_wishlist()
         assert info[0] == 'Dodano do ulubionych', "Powiadomienie o dodaniu produktu do ulubionych sie nie wyświetliło"
+        assert info[1] == '1', 'Nie wyświetlił się licznik produktów przy ikonce ulubione'
         product_title = wishlist.get_product_title()
-        assert info[1] == product_title, "Tytuł produktu z wishlisty nie jest taki sam jak tytul na karcie produktu"
+        assert info[2] == product_title, "Tytuł produktu z wishlisty nie jest taki sam jak tytul na karcie produktu"
 
-    #def test_add_product_do_card_from_wishlist(self, setup):
+    def test_add_product_do_card_from_wishlist(self, setup):
+        self.driver.get('http://prototype.devsel.pl/p/13/182/m080-1')
+        pdp = ProductDetailPage(self.driver)
+        wishlist = WishlistPage(self.driver)
+        pdp.close_cookies_popup()
+        pdp.set_variants()
+        info = pdp.add_to_wishlist()
+        cart_info = wishlist.add_all_products_to_basket()
+        assert cart_info[0] == info[1], "Niepoprawna ilość produktów w koszyku"
+        assert cart_info[1] == info[2], "Niepoprawny produkt został dodany do koszyka"
+
         
 
 
