@@ -23,17 +23,14 @@ class ListingPage:
         self.newsletter_submit_button_class = 'js-newsletter-trigger'
         self.news_container_class = 'm-news-panel-1__box'
         self.cookie_popup_accept_button_class = 'js-accept-cookie-alert-1'
-
         self.product_box_class = 'c-product-box--listing'
         self.search_query_title = 'c-section-header__title'
         self.sorting_container_class = 'js-select-field-action'
         self.min_price_input_class = 'js-price-filter-min-input'
         self.max_price_input_class = 'js-price-filter-max-input'
         self.price_filter_button_class = 'm-price-filter-1__button-wrapper'
-        #Podmienić na klasy
-        self.product_titles_xpath = '/html/body/main/div[3]/div[2]/div[3]//h3'
-        self.product_price_values_xpath = '/html/body/main/div[3]/div[2]/div[3]//span[1]'
-        #Podmienić na klasy
+        self.product_titles_class = 'at-product-box-title'
+        self.product_primary_price_values_class = 'at-product-box-primary-price'
         self.pagination_module_class = 'm-pagination-1__page'
         self.pagination_next_page_class = 'm-pagination-1__nearby-page--next'
         self.pagination_last_page_class = 'm-pagination-1__page--last'
@@ -48,11 +45,11 @@ class ListingPage:
             pages_count = self.driver.find_elements_by_class_name(self.pagination_module_class)
             pages_count = int(pages_count[-1].text)
         except:
-            for title in self.driver.find_elements_by_xpath(self.product_titles_xpath):
+            for title in self.driver.find_elements_by_class_name(self.product_titles_class):
                 title_list.append(title.text)
             return title_list
         for page in range(pages_count):
-            for title in self.driver.find_elements_by_xpath(self.product_titles_xpath):
+            for title in self.driver.find_elements_by_class_name(self.product_titles_class):
                 title_list.append(title.text)
             if page + 1 == pages_count:
                 return title_list
@@ -78,11 +75,12 @@ class ListingPage:
         wait = WebDriverWait(self.driver, 5)
         wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME,'c-select-field__list-holder')))
         self.driver.find_element_by_link_text(type).click()
+        wait.until(expected_conditions.visibility_of_all_elements_located)
         if "Cena" in type:
-            prices = self.driver.find_elements_by_xpath(self.product_price_values_xpath)
+            prices = self.driver.find_elements_by_class_name(self.product_primary_price_values_class)
             return prices
         if "Nazwa" in type:
-            titles = self.driver.find_elements_by_xpath(self.product_titles_xpath)
+            titles = self.driver.find_elements_by_class_name(self.product_titles_class)
             return titles
 
     def filter_by_price(self, price_min, price_max):
@@ -99,10 +97,10 @@ class ListingPage:
             pages_count = self.driver.find_elements_by_class_name(self.pagination_module_class)
             pages_count = int(pages_count[-1].text)
         except:
-            prices = self.driver.find_elements_by_xpath(self.product_price_values_xpath)
+            prices = self.driver.find_elements_by_class_name(self.product_primary_price_values_class)
             return prices
         for page in range(pages_count):
-            for price in self.driver.find_elements_by_xpath(self.product_price_values_xpath):
+            for price in self.driver.find_elements_by_class_name(self.product_primary_price_values_class):
                 prices.append(price.text)
             if page + 1 == pages_count:
                 return prices
