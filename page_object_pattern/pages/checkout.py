@@ -2,6 +2,7 @@ import logging
 import time
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.common.by import By
 
 class CheckoutPage:
 
@@ -10,7 +11,7 @@ class CheckoutPage:
         self.logger = logging.getLogger(__name__)
         self.cart_sum_value_class = 'js-cart-sum-value'
         self.cart_delivery_value_class = 'js-cart-delivery-value'
-        self.cart_discount_value_class ='js-cart-discount-value'
+        self.cart_discount_value_class ='at-cart-discount-value'
         self.cart_overall_value_class = 'js-cart-sum-overal-value'
         self.cart_next_button_class = 'js-cart-next'
         self.cart_back_button_class = 'js-cart-back'
@@ -28,6 +29,15 @@ class CheckoutPage:
         self.cart_payment_option_class = 'js-cart-payment-option'
         self.cart_payment_name_class = 'js-cart-payment-name'
         self.cart_product_title_class = 'c-table-product__title'
+        self.cart_name_input_name = 'name'
+        self.cart_surname_input_name = 'surname'
+        self.cart_street_input_name = 'street'
+        self.cart_home_number_input_name = 'home_number'
+        self.cart_postcode_input_name = 'postcode'
+        self.cart_city_input_name ='city'
+        self.phone_input_name = 'phone'
+        self.email_input_name = 'email'
+        self.rules_acceptation_checkbox_class = 'c-checkbox-field__checkbox-container'
 
 
     def get_product_data(self):
@@ -56,9 +66,50 @@ class CheckoutPage:
         return payment_methods
 
     def use_discount_code(self, code):
+        wait = WebDriverWait(self.driver,2)
         self.driver.find_element_by_class_name(self.cart_discount_code_label).click()
         self.logger.info("Using discount code {}".format(code))
         self.driver.find_element_by_class_name(self.cart_discount_code_input_class).send_keys(code)
+        wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.cart_discount_value_class)))
+
+    def next_step(self):
+        self.driver.find_element_by_class_name(self.cart_next_button_class).click()
+        time.sleep(1)
+
+    def complete_delivery_data(self, delivery_data):
+        self.logger.info('Completing delivery data')
+        self.logger.info('Setting name to: {}'.format(delivery_data[0]))
+        self.driver.find_element_by_name(self.cart_name_input_name).send_keys(delivery_data[0])
+        self.logger.info('Setting surname to: {}'.format(delivery_data[1]))
+        self.driver.find_element_by_name(self.cart_surname_input_name).send_keys(delivery_data[1])
+        self.logger.info('Setting street to: {}'.format(delivery_data[2]))
+        self.driver.find_element_by_name(self.cart_street_input_name).send_keys(delivery_data[2])
+        self.logger.info('Setting name home number to: {}'.format(delivery_data[3]))
+        self.driver.find_element_by_name(self.cart_home_number_input_name).send_keys(delivery_data[3])
+        self.logger.info('Setting postcode to: {}'.format(delivery_data[4]))
+        self.driver.find_element_by_name(self.cart_postcode_input_name).send_keys(delivery_data[4])
+        self.logger.info('Setting city to: {}'.format(delivery_data[5]))
+        self.driver.find_element_by_name(self.cart_city_input_name).send_keys(delivery_data[5])
+        self.logger.info('Setting phone number to: {}'.format(delivery_data[6]))
+        self.driver.find_element_by_name(self.phone_input_name).send_keys(delivery_data[6])
+        self.logger.info('Setting email to: {}'.format(delivery_data[7]))
+        self.driver.find_element_by_name(self.email_input_name).send_keys(delivery_data[7])
+        self.driver.find_element_by_class_name(self.rules_acceptation_checkbox_class).click()
+
+    def check_summary_correctness(self):
+        sum = self.driver.find_element_by_class_name(self.cart_sum_value_class).text
+        sum = float(sum.replace(',','.'))
+        discount = self.driver.find_element_by_class_name(self.cart_discount_value_class).text
+        discount = float(discount.replace(',','.'))
+        delivery = self.driver.find_element_by_class_name(self.cart_delivery_value_class).text
+        delivery = float(delivery.replace(',','.'))
+        overall = self.driver.find_element_by_class_name(self.cart_overall_value_class).text
+        overall = float(overall.replace(',','.'))
+        return sum - discount + delivery == overall
+
+
+
+
 
 
 

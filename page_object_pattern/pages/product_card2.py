@@ -44,10 +44,17 @@ class ProductDetailPage:
         self.product_add_to_basket_button_error_class = 'js-add-product-to-card-error'
         self.product_add_to_basket_button_success_class = 'js-add-product-to-card-success'
         self.product_added_to_wishlist_tooltip_text_class = 'js-check-tooltip-text'
+        self.product_add_to_basket_buttons_class = 'js-product-card-buttons'
 
     def set_variants(self):
-        self.driver.find_element_by_class_name(self.product_variant_color_class).click()
-        self.driver.find_element_by_class_name(self.product_variant_size_class).click()
+        try:
+            self.driver.find_element_by_class_name(self.product_variant_color_class).click()
+        except:
+            pass
+        try:
+            self.driver.find_element_by_class_name(self.product_variant_size_class).click()
+        except:
+            pass
         time.sleep(2)
 
     def add_to_wishlist(self):
@@ -67,13 +74,15 @@ class ProductDetailPage:
             product_name = self.driver.find_element_by_class_name(self.product_title_class).text
             product_price = self.driver.find_element_by_class_name(self.product_prices_class).text
             product_quantity = self.driver.find_element_by_class_name(self.product_quantity_input_class).get_attribute('value')
-            wait.until(expected_conditions.element_to_be_clickable((By.ID, self.product_add_to_basket_button_id)))
+            #wait.until(expected_conditions.element_to_be_clickable((By.ID, self.product_add_to_basket_button_id)))
             self.driver.find_element_by_id(self.product_add_to_basket_button_id).click()
             time.sleep(1)
-            self.driver.find_element_by_class_name(self.product_add_to_basket_button_success_class).click()
+            self.logger.info('Added {} to basket successfully'.format(product_name))
+            self.driver.find_element_by_class_name(self.product_add_to_basket_buttons_class).click()
             return product_name, product_price, product_quantity
         except:
-            error_status = self.driver.find_element_by_class_name(self.product_add_to_basket_button_error_class).text
+            error_status = self.driver.find_element_by_class_name(self.product_add_to_basket_buttons_class).text
+            self.logger.info(error_status)
             return error_status
 
     def add_opinion(self, name, opinion, stars):

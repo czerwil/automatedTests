@@ -26,7 +26,7 @@ class TestAddToWishlist:
         self.driver.quit()
 
     def test_add_product_to_wishlist(self, setup):
-        self.driver.get('http://prototype.devsel.pl/p/13/182/m080-1')
+        self.driver.get('http://prototype1.devsel.pl/p/13/182/m080-1')
         pdp = ProductDetailPage(self.driver)
         wishlist = WishlistPage(self.driver)
         pdp.close_cookies_popup()
@@ -38,7 +38,7 @@ class TestAddToWishlist:
         assert info[2] == product_title, "Tytuł produktu z wishlisty nie jest taki sam jak tytul na karcie produktu"
 
     def test_add_product_do_card_from_wishlist(self, setup):
-        self.driver.get('http://prototype.devsel.pl/p/13/182/m080-1')
+        self.driver.get('http://prototype1.devsel.pl/p/13/182/m080-1')
         pdp = ProductDetailPage(self.driver)
         wishlist = WishlistPage(self.driver)
         pdp.close_cookies_popup()
