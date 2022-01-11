@@ -14,6 +14,7 @@ class TestPlaceOrder:
     def setup(self):
         options = webdriver.ChromeOptions()
         options.add_argument("--disable-gpu")
+        options.add_argument("--log-level=3")
         #options.add_argument("--headless")
         options.add_argument('window-size=1920x1080');
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
@@ -31,6 +32,7 @@ class TestPlaceOrder:
         pdp.set_variants()
         is_product_available = pdp.add_to_basket()
         assert is_product_available != "Produkt niedostępny", "Produkt niedostępny"
+        pdp.go_to_checkout_page()
         checkout.use_discount_code('SELLINGO')
         checkout.set_delivery_method()
         checkout.set_payment_method()
@@ -43,9 +45,29 @@ class TestPlaceOrder:
 
         checkout.next_step()
 
-    #def log_in_inside_checkout(self, setup):
+    def test_log_in_inside_checkout(self, setup):
+        self.driver.get('http://testshop.ovel.pl/fanita')
+        pdp = ProductDetailPage(self.driver)
+        checkout = CheckoutPage(self.driver)
+        pdp.close_cookies_popup()
+        pdp.set_variants()
+        is_product_available = pdp.add_to_basket()
+        assert is_product_available != "Produkt niedostępny", "Wybrany wariant produktu jest niedostępny"
+        pdp.go_to_checkout_page()
+        products_data = checkout.get_product_data()
+        checkout.next_step()
+        checkout.login_inside_checkout(['test@test.com','zaq12wsx'])
+        time.sleep(5)
+        products_data_after_login = checkout.get_product_data()
+        assert products_data == products_data_after_login, 'Po zalogowaniu się w koszyku zniknęły wcześniej dodane produkty'
+        checkout.remove_products_from_the_cart()
 
-    #def test_summary_correctness(self, setup):
+
+
+
+
+
+#def test_summary_correctness(self, setup):
 
 
 

@@ -38,6 +38,10 @@ class CheckoutPage:
         self.phone_input_name = 'phone'
         self.email_input_name = 'email'
         self.rules_acceptation_checkbox_class = 'c-checkbox-field__checkbox-container'
+        self.cart_product_variants_class = 'c-table-product__variant'
+        self.cart_login_form_inputs = 'at-login-form-input'
+        self.cart_login_submit = 'at-login-form-submit'
+        self.cart_delete_product_class = 'at-cart-product-delete'
 
 
     def get_product_data(self):
@@ -47,7 +51,14 @@ class CheckoutPage:
             price = self.driver.find_element_by_class_name(self.cart_product_price_after_discount_class).text
         except:
             price = self.driver.find_element_by_class_name(self.cart_product_price_after_discount_class).text
-        return name,price,quantity
+        try:
+            available_variants = self.driver.find_elements_by_class_name(self.cart_product_variants_class)
+            variants = []
+            for variant in available_variants:
+                variants.append(variant.text)
+        except:
+            pass
+        return name,price,quantity,variants
 
     def set_delivery_method(self):
         delivery_methods = self.driver.find_elements_by_class_name(self.cart_shipment_name_class)
@@ -106,6 +117,20 @@ class CheckoutPage:
         overall = self.driver.find_element_by_class_name(self.cart_overall_value_class).text
         overall = float(overall.replace(',','.'))
         return sum - discount + delivery == overall
+
+    def login_inside_checkout(self, credentials):
+        input_fields  = self.driver.find_elements_by_class_name(self.cart_login_form_inputs)
+        i = 0
+        for input in input_fields:
+            input.send_keys(credentials[i])
+            i = 1
+        self.driver.find_element_by_class_name(self.cart_login_submit).click()
+        time.sleep(2)
+
+    def remove_products_from_the_cart(self):
+        self.driver.find_element_by_class_name(self.cart_delete_product_class).click()
+
+
 
 
 

@@ -5,6 +5,9 @@ from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
+
+
 
 class ProductDetailPage:
 
@@ -12,6 +15,7 @@ class ProductDetailPage:
         self.driver = driver
         self.logger = logging.getLogger(__name__)
         self.wishlist_button_id = 'header-wishlist'
+        self.basket_button_id = 'header-cart'
         self.wishlist_count_class = 'js-display-wishlist-count'
         self.product_title_class = 'm-product-data-2__title'
         self.product_rating_class = 'm-product-data-2__rating'
@@ -45,13 +49,18 @@ class ProductDetailPage:
         self.product_add_to_basket_button_success_class = 'js-add-product-to-card-success'
         self.product_added_to_wishlist_tooltip_text_class = 'js-check-tooltip-text'
         self.product_add_to_basket_buttons_class = 'js-product-card-buttons'
+        self.aside_redirect_to_basket_class = 'at-aside-cart-redirect'
 
     def set_variants(self):
         try:
+            color = self.driver.find_element_by_class_name(self.product_variant_color_class).text
+            self.logger.info('Setting color to {}'.format(color))
             self.driver.find_element_by_class_name(self.product_variant_color_class).click()
         except:
             pass
         try:
+            size = self.driver.find_element_by_class_name(self.product_variant_size_class).text
+            self.logger.info('Setting size to {}'.format(size))
             self.driver.find_element_by_class_name(self.product_variant_size_class).click()
         except:
             pass
@@ -61,7 +70,7 @@ class ProductDetailPage:
         wait = WebDriverWait(self.driver, 3)
         product_name = self.driver.find_element_by_class_name(self.product_title_class).text
         self.driver.find_element_by_class_name(self.product_add_to_wishlist_button_class).click()
-        wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.product_added_to_wishlist_tooltip_text_class)))
+        wait.until(expected_conditions.visibility_of((By.CLASS_NAME, self.product_added_to_wishlist_tooltip_text_class)))
         wishlist_count = self.driver.find_element_by_class_name(self.wishlist_count_class).text
         confirm_info = self.driver.find_element_by_class_name(self.product_added_to_wishlist_tooltip_text_class).text
         self.driver.find_element_by_id(self.wishlist_button_id).click()
@@ -69,16 +78,15 @@ class ProductDetailPage:
         return confirm_info, wishlist_count, product_name
 
     def add_to_basket(self):
-        wait = WebDriverWait(self.driver, 3)
+        wait = WebDriverWait(self.driver, 5)
         try:
             product_name = self.driver.find_element_by_class_name(self.product_title_class).text
             product_price = self.driver.find_element_by_class_name(self.product_prices_class).text
             product_quantity = self.driver.find_element_by_class_name(self.product_quantity_input_class).get_attribute('value')
-            #wait.until(expected_conditions.element_to_be_clickable((By.ID, self.product_add_to_basket_button_id)))
+            wait.until(expected_conditions.invisibility_of_element_located((By.CLASS_NAME, self.product_add_to_basket_button_error_class)))
             self.driver.find_element_by_id(self.product_add_to_basket_button_id).click()
             time.sleep(1)
             self.logger.info('Added {} to basket successfully'.format(product_name))
-            self.driver.find_element_by_class_name(self.product_add_to_basket_buttons_class).click()
             return product_name, product_price, product_quantity
         except:
             error_status = self.driver.find_element_by_class_name(self.product_add_to_basket_buttons_class).text
@@ -118,6 +126,10 @@ class ProductDetailPage:
         last_page = int(self.driver.find_element_by_class_name(self.product_opinion_last_page_button_class).text)
         self.logger.info(f"Last page number is {last_page}")
         return last_page, pages_count
+
+    def go_to_checkout_page(self):
+        self.driver.find_element_by_id(self.basket_button_id).click()
+        self.driver.find_element_by_class_name(self.aside_redirect_to_basket_class).click()
 
 
 
