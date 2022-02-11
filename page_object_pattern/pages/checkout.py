@@ -41,7 +41,10 @@ class CheckoutPage:
         self.cart_product_variants_class = 'c-table-product__variant'
         self.cart_login_form_inputs = 'at-login-form-input'
         self.cart_login_submit = 'at-login-form-submit'
-        self.cart_delete_product_class = 'at-cart-product-delete'
+        self.cart_delete_product_class_desktop = 'at-cart-product-delete-desktop'
+        self.cart_login_form_email_input = 'at-login-form-input-email'
+        self.cart_login_form_password_input = 'at-login-form-input-password'
+
 
 
     def get_product_data(self):
@@ -119,16 +122,13 @@ class CheckoutPage:
         return sum - discount + delivery == overall
 
     def login_inside_checkout(self, credentials):
-        input_fields  = self.driver.find_elements_by_class_name(self.cart_login_form_inputs)
-        i = 0
-        for input in input_fields:
-            input.send_keys(credentials[i])
-            i = 1
+        self.driver.find_element_by_class_name(self.cart_login_form_email_input).send_keys(credentials[0])
+        self.driver.find_element_by_class_name(self.cart_login_form_password_input).send_keys(credentials[1])
         self.driver.find_element_by_class_name(self.cart_login_submit).click()
         time.sleep(2)
 
     def remove_products_from_the_cart(self):
-        self.driver.find_element_by_class_name(self.cart_delete_product_class).click()
+        self.driver.find_element_by_class_name(self.cart_delete_product_class_desktop).click()
 
 
 

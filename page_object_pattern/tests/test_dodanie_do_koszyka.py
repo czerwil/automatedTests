@@ -17,7 +17,7 @@ class TestAddProductsToBasket:
         self.driver.quit()
 
     def test_add_single_product_to_basket(self, setup):
-        self.driver.get('http://prototype.devsel.pl/p/20/343/moe069-2')
+        self.driver.get('http://testshop.ovel.pl/sabi')
         pdp = ProductDetailPage(self.driver)
         basket = CheckoutPage(self.driver)
         pdp.close_cookies_popup()

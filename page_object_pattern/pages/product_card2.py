@@ -67,7 +67,7 @@ class ProductDetailPage:
         time.sleep(2)
 
     def add_to_wishlist(self):
-        wait = WebDriverWait(self.driver, 3)
+        wait = WebDriverWait(self.driver, 5)
         product_name = self.driver.find_element_by_class_name(self.product_title_class).text
         self.driver.find_element_by_class_name(self.product_add_to_wishlist_button_class).click()
         wait.until(expected_conditions.visibility_of((By.CLASS_NAME, self.product_added_to_wishlist_tooltip_text_class)))
@@ -106,6 +106,11 @@ class ProductDetailPage:
     def send_opinion(self):
         self.logger.info('Sending opinion')
         self.driver.find_element_by_class_name(self.product_send_opinion_button_class).click()
+        wait = WebDriverWait(self.driver, 5)
+        wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.product_popup_message_class)))
+        popup = self.driver.find_element_by_class_name(self.product_popup_message_class)
+        return popup.is_displayed()
+
 
     def close_cookies_popup(self):
         self.driver.find_element_by_class_name(self.cookie_popup_accept_class).click()
@@ -113,6 +118,9 @@ class ProductDetailPage:
 
     def pagination_of_opinions(self):
         pages_count = self.driver.find_elements_by_class_name(self.product_opinion_pagination_pages_class)
+        if len(pages_count)==0:
+            self.logger.info("Pagination module not found")
+            return 0
         pages_count = int(pages_count[-1].text)
         for page in range(pages_count):
             if page + 1 == pages_count:

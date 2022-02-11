@@ -1,5 +1,4 @@
 import time
-
 import pytest
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -14,7 +13,7 @@ class TestPlaceOrder:
     def setup(self):
         options = webdriver.ChromeOptions()
         options.add_argument("--disable-gpu")
-        options.add_argument("--log-level=3")
+        options.add_argument("--log-level=0")
         #options.add_argument("--headless")
         options.add_argument('window-size=1920x1080');
         options.add_experimental_option('excludeSwitches', ['enable-logging'])

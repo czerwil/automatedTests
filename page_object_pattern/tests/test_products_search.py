@@ -1,4 +1,5 @@
 import pytest
+import sys
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from page_object_pattern.pages.homepage import Homepage
@@ -16,7 +17,7 @@ class TestProductsSearch:
         self.driver.quit()
 
     def test_search_product(self, setup):
-        self.driver.get('http://prototype1.devsel.pl')
+        self.driver.get('http://testshop.ovel.pl')
         query = 'MOE'
         homepage = Homepage(self.driver)
         homepage.perform_search(query)
@@ -27,7 +28,7 @@ class TestProductsSearch:
             assert query in title, "Szukana fraza '" + query + "' nie znajduje sie w wyniku wyszukiwania " + title
 
     def test_listing_pagination(self, setup):
-        self.driver.get('http://prototype1.devsel.pl')
+        self.driver.get('http://testshop.ovel.pl')
         homepage = Homepage(self.driver)
         listing = ListingPage(self.driver)
         homepage.perform_search('Czarny')
@@ -36,7 +37,7 @@ class TestProductsSearch:
         assert pages[0] == int(pages[1]), "Stron powinno być " + str(pages[0]) + ", a ostatnia strona ma numer " + pages[1]
 
     def test_sort_by_price_asc(self, setup):
-        self.driver.get('http://prototype1.devsel.pl/produkty/nowosci')
+        self.driver.get('http://testshop.ovel.pl/bluzki')
         listing = ListingPage(self.driver)
         prices = listing.products_sort('Cena rosnąco')
         cheaper = float(prices[0].text.replace(",", "."))
@@ -46,7 +47,7 @@ class TestProductsSearch:
             cheaper = price_value
 
     def test_sort_by_price_desc(self, setup):
-        self.driver.get('http://prototype1.devsel.pl/produkty/nowosci')
+        self.driver.get('http://testshop.ovel.pl/bluzki')
         listing = ListingPage(self.driver)
         prices = listing.products_sort('Cena malejąco')
         more_expensive = float(prices[0].text.replace(",", "."))
@@ -56,7 +57,7 @@ class TestProductsSearch:
             more_expensive = price_value
 
     def test_sort_by_name_asc(self, setup):
-        self.driver.get('http://prototype1.devsel.pl/produkty/nowosci')
+        self.driver.get('http://testshop.ovel.pl/bluzki')
         listing = ListingPage(self.driver)
         titles = listing.products_sort('Nazwa rosnąco')
         first_title = titles[0].text
@@ -65,7 +66,7 @@ class TestProductsSearch:
             first_title = title.text
 
     def test_sort_by_name_desc(self, setup):
-        self.driver.get('http://prototype1.devsel.pl/produkty/nowosci')
+        self.driver.get('http://testshop.ovel.pl/bluzki')
         listing = ListingPage(self.driver)
         titles = listing.products_sort('Nazwa malejąco')
         first_title = titles[0].text.lower()
@@ -75,7 +76,7 @@ class TestProductsSearch:
             first_title = next_title
 
     def test_filtering_products(self, setup):
-        self.driver.get('http://prototype1.devsel.pl/produkty/nowosci')
+        self.driver.get('http://testshop.ovel.pl/bluzki')
         min = 50
         max = 80
         listing = ListingPage(self.driver)
