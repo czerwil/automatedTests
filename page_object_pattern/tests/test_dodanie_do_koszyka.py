@@ -23,8 +23,10 @@ class TestAddProductsToBasket:
         pdp.close_cookies_popup()
         pdp.set_variants()
         pdp_data = pdp.add_to_basket()
+        pdp.go_to_checkout_page()
         basket_data = basket.get_product_data()
         assert pdp_data == basket_data, "Nazwa produktu w koszyku jest nieprawidłowa"
 
+#zeby porownac warianty trzeba wyodrebnic w koszyku wartosc wariantu od jego nazwy
 
 

@@ -32,6 +32,7 @@ class TestAddToWishlist:
         pdp.close_cookies_popup()
         pdp.set_variants()
         info = pdp.add_to_wishlist()
+        pdp.go_to_wishlist_page()
         assert info[0] == 'Dodano do ulubionych', "Powiadomienie o dodaniu produktu do ulubionych sie nie wyświetliło"
         assert info[1] == '1', 'Nie wyświetlił się licznik produktów przy ikonce ulubione'
         product_title = wishlist.get_product_title()
@@ -44,6 +45,7 @@ class TestAddToWishlist:
         pdp.close_cookies_popup()
         pdp.set_variants()
         info = pdp.add_to_wishlist()
+        pdp.go_to_wishlist_page()
         cart_info = wishlist.add_all_products_to_basket()
         assert cart_info[0] == info[1], "Niepoprawna ilość produktów w koszyku"
         assert cart_info[1] == info[2], "Niepoprawny produkt został dodany do koszyka"

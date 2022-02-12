@@ -18,14 +18,15 @@ class TestNewsletterSubscription:
         homepage = Homepage(self.driver)
         homepage.accept_cookie_policy()
         email_address = 'test@test.com'
-        homepage.subscribe_to_newsletter(email_address)
+        pop_up = homepage.subscribe_to_newsletter_success(email_address)
+        assert pop_up!="", "Nie pojawił się pop-up potwierdzający zapisanie do newslettera"
 
     def test_subscribe_wrong_email(self, setup):
         self.driver.get('http://testshop.ovel.pl')
         homepage = Homepage(self.driver)
         homepage.accept_cookie_policy()
         email_address = 'testtest.com'
-        alert = homepage.subscribe_to_newsletter(email_address)
+        alert = homepage.subscribe_to_newsletter_fail(email_address)
         assert alert.text == 'Adres email jest nieprawidłowy.',"Komunikat jest niepoprawny"
 
 

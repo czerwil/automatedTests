@@ -31,7 +31,7 @@ class TestProductsSearch:
         self.driver.get('http://testshop.ovel.pl')
         homepage = Homepage(self.driver)
         listing = ListingPage(self.driver)
-        homepage.perform_search('Czarny')
+        homepage.perform_search('MOE')
         pages = listing.pagination()
         # Sprawdzenie, czy udało się przejść do ostatniej strony paginacji na listingu
         assert pages[0] == int(pages[1]), "Stron powinno być " + str(pages[0]) + ", a ostatnia strona ma numer " + pages[1]
@@ -86,6 +86,7 @@ class TestProductsSearch:
             price_value = float(price.replace(',', '.'))
             assert price_value >= min and price_value <= max, "Błąd w filtrowaniu po cenie"
 
+#Inputy w filtrach po wyczyszczeniu i zgubieniu focusa automatycznie się uzupełniają przez co nie mogę wprowadzić wartości
 
 
 

@@ -48,20 +48,22 @@ class CheckoutPage:
 
 
     def get_product_data(self):
+        wait = WebDriverWait(self.driver,3)
         name = self.driver.find_element_by_class_name(self.cart_product_title_class).text
         quantity = self.driver.find_element_by_class_name(self.cart_product_quantity_input_class).get_attribute('value')
         try:
+            wait.until(expected_conditions.text_to_be_present_in_element((By.CLASS_NAME,self.cart_product_price_after_discount_class)))
             price = self.driver.find_element_by_class_name(self.cart_product_price_after_discount_class).text
         except:
-            price = self.driver.find_element_by_class_name(self.cart_product_price_after_discount_class).text
-        try:
-            available_variants = self.driver.find_elements_by_class_name(self.cart_product_variants_class)
-            variants = []
-            for variant in available_variants:
-                variants.append(variant.text)
-        except:
+            price = self.driver.find_element_by_class_name(self.cart_product_price_original_class).text
+        #try:
+        #   available_variants = self.driver.find_elements_by_class_name(self.cart_product_variants_class)
+        #    variants = []
+        #    for variant in available_variants:
+        #        variants.append(variant.text)
+        #except:
             pass
-        return name,price,quantity,variants
+        return name,price,quantity #,variants
 
     def set_delivery_method(self):
         delivery_methods = self.driver.find_elements_by_class_name(self.cart_shipment_name_class)
@@ -129,7 +131,7 @@ class CheckoutPage:
 
     def remove_products_from_the_cart(self):
         self.driver.find_element_by_class_name(self.cart_delete_product_class_desktop).click()
-
+        #po klasie nie lapie - lapie po elemencie path
 
 
 

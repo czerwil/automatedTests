@@ -32,6 +32,8 @@ class Homepage:
         self.switch_to_register_form_class = 'js-modal-aside-register'
         self.login_confirm_button_class = 'js-submit-login'
         self.my_account_link_text = 'Moje dane'
+        self.newsletter_pop_up_class = 'l-popup__message'
+        self.newsletter_pop_up_text_class = 'l-popup__message-content'
 
 
 
@@ -43,12 +45,29 @@ class Homepage:
     def accept_cookie_policy(self):
         self.driver.find_element_by_class_name(self.cookie_popup_accept_button_class).click()
 
-    def subscribe_to_newsletter(self, email):
+    def subscribe_to_newsletter_fail(self, email):
+        self.logger.info("Subscribing for newsletter:")
+        self.logger.info("Sending email address{}".format(email))
         self.driver.find_element_by_class_name(self.newsletter_email_input_class).send_keys(email)
+        self.logger.info("Clicking subscribe button")
         self.driver.find_element_by_class_name(self.newsletter_submit_button_class).click()
-        alert = self.driver.find_element_by_xpath(self.newsletter_alert_span_xpath)
         time.sleep(1)
+        alert = self.driver.find_element_by_xpath(self.newsletter_alert_span_xpath)
+        self.logger.info("Got alert message: {}".format(alert.text))
         return alert
+
+    def subscribe_to_newsletter_success(self, email):
+        wait = WebDriverWait(self.driver,3)
+        self.logger.info("Subscribing for newsletter:")
+        self.logger.info("Sending email address{}".format(email))
+        self.driver.find_element_by_class_name(self.newsletter_email_input_class).send_keys(email)
+        self.logger.info("Clicking subscribe button")
+        self.driver.find_element_by_class_name(self.newsletter_submit_button_class).click()
+        wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME,self.newsletter_pop_up_class)))
+        pop_up_text = self.driver.find_element_by_class_name(self.newsletter_pop_up_text_class).text
+        self.logger.info("Got message: {}".format(pop_up_text))
+        return pop_up_text
+
 
     def register_account(self, email, password):
         self.driver.find_element_by_id(self.account_button_id).click()

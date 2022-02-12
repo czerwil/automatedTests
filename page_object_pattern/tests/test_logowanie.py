@@ -25,16 +25,16 @@ class TestRegisterAccount:
         self.driver.get('http://testshop.ovel.pl')
         homepage = Homepage(self.driver)
         homepage.accept_cookie_policy()
-        homepage.sign_in('k.czerwinski@netgraf.pl', 'zaq12wsx')
+        homepage.sign_in('test@test.com', 'zaq12wsx')
         url = homepage.go_to_account_page()
-        assert url == 'http://prototype.devsel.pl/moje_konto', "Niepoprawny adres strony - nie udało się przejść do strony Moje konto"
+        assert url == 'http://testshop.ovel.pl/moje_konto', "Niepoprawny adres strony - nie udało się przejść do strony Moje konto"
 
     def test_sign_out(self,setup):
         self.driver.get('http://testshop.ovel.pl')
         homepage = Homepage(self.driver)
         account_page = MyAccountPage(self.driver)
         homepage.accept_cookie_policy()
-        homepage.sign_in('k.czerwinski@netgraf.pl', 'zaq12wsx')
+        homepage.sign_in('test@test.com', 'zaq12wsx')
         account_page_url = homepage.go_to_account_page()
         account_page.logout()
         self.driver.get('http://testshop.ovel.pl/moje_konto')

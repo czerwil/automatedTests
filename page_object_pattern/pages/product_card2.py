@@ -70,12 +70,15 @@ class ProductDetailPage:
         wait = WebDriverWait(self.driver, 5)
         product_name = self.driver.find_element_by_class_name(self.product_title_class).text
         self.driver.find_element_by_class_name(self.product_add_to_wishlist_button_class).click()
-        wait.until(expected_conditions.visibility_of((By.CLASS_NAME, self.product_added_to_wishlist_tooltip_text_class)))
+        time.sleep(1)
+        #wait.until(expected_conditions.visibility_of((By.CLASS_NAME, self.product_added_to_wishlist_tooltip_text_class)))
         wishlist_count = self.driver.find_element_by_class_name(self.wishlist_count_class).text
         confirm_info = self.driver.find_element_by_class_name(self.product_added_to_wishlist_tooltip_text_class).text
+        return confirm_info, wishlist_count, product_name
+
+    def go_to_wishlist_page(self):
         self.driver.find_element_by_id(self.wishlist_button_id).click()
         self.driver.find_element_by_link_text('Ulubione').click()
-        return confirm_info, wishlist_count, product_name
 
     def add_to_basket(self):
         wait = WebDriverWait(self.driver, 5)

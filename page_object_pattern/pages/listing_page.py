@@ -86,10 +86,12 @@ class ListingPage:
     def filter_by_price(self, price_min, price_max):
         self.accept_cookie_policy()
         self.driver.find_element_by_class_name(self.min_price_input_class).click()
-        self.driver.find_element_by_class_name(self.min_price_input_class).send_keys(Keys.BACK_SPACE*6)
+        #self.driver.find_element_by_class_name(self.min_price_input_class).send_keys(Keys.BACK_SPACE*6)
+        self.driver.find_element_by_class_name(self.min_price_input_class).clear()
         self.driver.find_element_by_class_name(self.min_price_input_class).send_keys(price_min)
         self.driver.find_element_by_class_name(self.max_price_input_class).click()
-        self.driver.find_element_by_class_name(self.max_price_input_class).send_keys(Keys.BACK_SPACE*6)
+        #self.driver.find_element_by_class_name(self.max_price_input_class).send_keys(Keys.BACK_SPACE*6)
+        self.driver.find_element_by_class_name(self.max_price_input_class).clear()
         self.driver.find_element_by_class_name(self.max_price_input_class).send_keys(price_max)
         self.driver.find_element_by_class_name(self.price_filter_button_class).click()
         prices = []
