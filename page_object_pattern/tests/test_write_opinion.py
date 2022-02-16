@@ -1,8 +1,10 @@
 from random import randrange
 import pytest
+import allure
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from page_object_pattern.pages.product_card2 import ProductDetailPage
+
 
 
 class TestWriteOpinion:
@@ -15,6 +17,8 @@ class TestWriteOpinion:
         yield
         self.driver.quit()
 
+    @allure.title('Test of adding new opinion')
+    @allure.description('Writing and sending opinion of product')
     def test_write_opinion(self, setup):
         self.driver.get('http://testshop.ovel.pl/sabi')
         pdp = ProductDetailPage(self.driver)

@@ -1,6 +1,8 @@
 import time
-
+import allure
 import logging
+
+from allure_commons.types import AttachmentType
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
@@ -96,6 +98,7 @@ class ProductDetailPage:
             self.logger.info(error_status)
             return error_status
 
+    @allure.step("Writing opinion and selecting star rating")
     def add_opinion(self, name, opinion, stars):
         self.logger.info("Adding {stars} stars opinion with nickname {name}".format(stars=stars, name=name))
         self.driver.find_element_by_class_name(self.product_write_opinion_class).click()
@@ -105,20 +108,24 @@ class ProductDetailPage:
         self.driver.find_element_by_name(self.product_opinion_comment).send_keys(opinion)
         rating = self.driver.find_elements_by_class_name(self.product_stars_class)
         rating[stars].click()
+        allure.attach(self.driver.get_screenshot_as_png(), name='write_opinion', attachment_type=AttachmentType.PNG)
 
+    @allure.step("Sending opinion")
     def send_opinion(self):
         self.logger.info('Sending opinion')
         self.driver.find_element_by_class_name(self.product_send_opinion_button_class).click()
         wait = WebDriverWait(self.driver, 5)
         wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.product_popup_message_class)))
         popup = self.driver.find_element_by_class_name(self.product_popup_message_class)
+        allure.attach(self.driver.get_screenshot_as_png(), name='send_opinion', attachment_type=AttachmentType.PNG)
         return popup.is_displayed()
 
-
+    @allure.step('Closing the cookies popup so that any click will not be intercepted by it')
     def close_cookies_popup(self):
         self.driver.find_element_by_class_name(self.cookie_popup_accept_class).click()
         #self.driver.find_element_by_class_name(self.product_opinion_popup_close_class).click()
 
+    @allure.step('Paginating through all opinion pages')
     def pagination_of_opinions(self):
         pages_count = self.driver.find_elements_by_class_name(self.product_opinion_pagination_pages_class)
         if len(pages_count)==0:
@@ -136,6 +143,7 @@ class ProductDetailPage:
                 continue
         last_page = int(self.driver.find_element_by_class_name(self.product_opinion_last_page_button_class).text)
         self.logger.info(f"Last page number is {last_page}")
+        allure.attach(self.driver.get_screenshot_as_png(), name='paginating_opinions', attachment_type=AttachmentType.PNG)
         return last_page, pages_count
 
     def go_to_checkout_page(self):
