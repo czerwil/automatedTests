@@ -1,6 +1,6 @@
-from random import randrange
 import pytest
 import allure
+from random import randrange
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from page_object_pattern.pages.product_card2 import ProductDetailPage
@@ -27,6 +27,8 @@ class TestWriteOpinion:
         is_popup_displayed = pdp.send_opinion()
         assert is_popup_displayed is True, "Nie wyświetlił się pop-up potwierdzający dodanie opinii produktu"
 
+    @allure.title('Test of opinion paginations')
+    @allure.description('Paginating through all opinions pages')
     def test_opinion_pagination(self, setup):
         self.driver.get('http://testshop.ovel.pl/sabi')
         pdp = ProductDetailPage(self.driver)

@@ -29,6 +29,7 @@ class Homepage:
         self.login_form_password_input_name = 'password'
         self.login_form_confirm_password_input_name = 'password_confirm'
         self.register_form_terms_of_condition_checkbox_label_class = 'c-checkbox-field__label'
+        self.regist = 'at-aside-register-input'
         self.switch_to_register_form_class = 'js-modal-aside-register'
         self.login_confirm_button_class = 'js-submit-login'
         self.my_account_link_text = 'Moje dane'

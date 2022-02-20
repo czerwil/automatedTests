@@ -1,21 +1,14 @@
+import allure
 import pytest
-import sys
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
 from page_object_pattern.pages.homepage import Homepage
 from page_object_pattern.pages.listing_page import ListingPage
 
 
+@pytest.mark.usefixtures('setup')
 class TestProductsSearch:
 
-    @pytest.fixture()
-    def setup(self):
-        self.driver = webdriver.Chrome(ChromeDriverManager().install())
-        self.driver.implicitly_wait(2)
-        self.driver.maximize_window()
-        yield
-        self.driver.quit()
-
+    @allure.title('Test of search form')
+    @allure.description('Typing query in search form and then performing search and checking that results are matching the search query')
     def test_search_product(self, setup):
         self.driver.get('http://testshop.ovel.pl')
         query = 'MOE'
@@ -23,17 +16,17 @@ class TestProductsSearch:
         homepage.perform_search(query)
         listing = ListingPage(self.driver)
         titles = listing.get_results_titles(query)
-        #Sprawdzenie czy wyszukana fraza zawiera się w wyszukanych nazwach produktów
         for title in titles:
             assert query in title, "Szukana fraza '" + query + "' nie znajduje sie w wyniku wyszukiwania " + title
 
+    @allure.title('Test of listing pagination')
+    @allure.description('Searching for products and then paginating through all listing pages')
     def test_listing_pagination(self, setup):
         self.driver.get('http://testshop.ovel.pl')
         homepage = Homepage(self.driver)
         listing = ListingPage(self.driver)
         homepage.perform_search('MOE')
         pages = listing.pagination()
-        # Sprawdzenie, czy udało się przejść do ostatniej strony paginacji na listingu
         assert pages[0] == int(pages[1]), "Stron powinno być " + str(pages[0]) + ", a ostatnia strona ma numer " + pages[1]
 
     def test_sort_by_price_asc(self, setup):
@@ -81,7 +74,6 @@ class TestProductsSearch:
         max = 80
         listing = ListingPage(self.driver)
         prices = listing.filter_by_price(min, max)
-        #pobierają się dwie ceny z produktu regularna i promocyjna - need fix
         for price in prices:
             price_value = float(price.replace(',', '.'))
             assert price_value >= min and price_value <= max, "Błąd w filtrowaniu po cenie"

@@ -53,6 +53,7 @@ class ProductDetailPage:
         self.product_add_to_basket_buttons_class = 'js-product-card-buttons'
         self.aside_redirect_to_basket_class = 'at-aside-cart-redirect'
 
+    @allure.step("Setting product's variants ")
     def set_variants(self):
         try:
             color = self.driver.find_element_by_class_name(self.product_variant_color_class).text
@@ -66,22 +67,31 @@ class ProductDetailPage:
             self.driver.find_element_by_class_name(self.product_variant_size_class).click()
         except:
             pass
+        allure.attach(self.driver.get_screenshot_as_png(), name='product added to wishlist', attachment_type=AttachmentType.PNG)
         time.sleep(2)
 
+    @allure.step("Adding single product to wishlist")
     def add_to_wishlist(self):
         wait = WebDriverWait(self.driver, 5)
         product_name = self.driver.find_element_by_class_name(self.product_title_class).text
+        self.logger.info('Adding {} to wishlist'.format(product_name))
         self.driver.find_element_by_class_name(self.product_add_to_wishlist_button_class).click()
         time.sleep(1)
         #wait.until(expected_conditions.visibility_of((By.CLASS_NAME, self.product_added_to_wishlist_tooltip_text_class)))
         wishlist_count = self.driver.find_element_by_class_name(self.wishlist_count_class).text
         confirm_info = self.driver.find_element_by_class_name(self.product_added_to_wishlist_tooltip_text_class).text
+        allure.attach(self.driver.get_screenshot_as_png(), name='product added to wishlist', attachment_type=AttachmentType.PNG)
         return confirm_info, wishlist_count, product_name
 
+    @allure.step("Going to wishlist page")
     def go_to_wishlist_page(self):
+        self.logger.info('Clicking on wishlist button')
         self.driver.find_element_by_id(self.wishlist_button_id).click()
+        self.logger.info('Redirecting to the wishlist page')
         self.driver.find_element_by_link_text('Ulubione').click()
+        allure.attach(self.driver.get_screenshot_as_png(), name='wishlist page', attachment_type=AttachmentType.PNG)
 
+    @allure.step("Adding single product to basket")
     def add_to_basket(self):
         wait = WebDriverWait(self.driver, 5)
         try:
@@ -92,10 +102,12 @@ class ProductDetailPage:
             self.driver.find_element_by_id(self.product_add_to_basket_button_id).click()
             time.sleep(1)
             self.logger.info('Added {} to basket successfully'.format(product_name))
+            allure.attach(self.driver.get_screenshot_as_png(), name='product added to the basket', attachment_type=AttachmentType.PNG)
             return product_name, product_price, product_quantity
         except:
             error_status = self.driver.find_element_by_class_name(self.product_add_to_basket_buttons_class).text
-            self.logger.info(error_status)
+            self.logger.info('Cannot add product to the basket: {}'.format(error_status))
+            allure.attach(self.driver.get_screenshot_as_png(), name='cannot add product to the basket', attachment_type=AttachmentType.PNG)
             return error_status
 
     @allure.step("Writing opinion and selecting star rating")
@@ -120,15 +132,14 @@ class ProductDetailPage:
         allure.attach(self.driver.get_screenshot_as_png(), name='send_opinion', attachment_type=AttachmentType.PNG)
         return popup.is_displayed()
 
-    @allure.step('Closing the cookies popup so that any click will not be intercepted by it')
+    @allure.step('Closing the cookies popup')
     def close_cookies_popup(self):
         self.driver.find_element_by_class_name(self.cookie_popup_accept_class).click()
-        #self.driver.find_element_by_class_name(self.product_opinion_popup_close_class).click()
 
     @allure.step('Paginating through all opinion pages')
     def pagination_of_opinions(self):
         pages_count = self.driver.find_elements_by_class_name(self.product_opinion_pagination_pages_class)
-        if len(pages_count)==0:
+        if len(pages_count) == 0:
             self.logger.info("Pagination module not found")
             return 0
         pages_count = int(pages_count[-1].text)
@@ -143,12 +154,17 @@ class ProductDetailPage:
                 continue
         last_page = int(self.driver.find_element_by_class_name(self.product_opinion_last_page_button_class).text)
         self.logger.info(f"Last page number is {last_page}")
-        allure.attach(self.driver.get_screenshot_as_png(), name='paginating_opinions', attachment_type=AttachmentType.PNG)
+        allure.attach(self.driver.get_screenshot_as_png(), name='last page of opinions', attachment_type=AttachmentType.PNG)
         return last_page, pages_count
 
+    @allure.step('Going to checkout page')
     def go_to_checkout_page(self):
+        self.logger.info('Clicking basket button')
         self.driver.find_element_by_id(self.basket_button_id).click()
+        self.logger.info('Redirecting to the checkout page')
         self.driver.find_element_by_class_name(self.aside_redirect_to_basket_class).click()
+        allure.attach(self.driver.get_screenshot_as_png(), name='going to checkout', attachment_type=AttachmentType.PNG)
+
 
 
 
