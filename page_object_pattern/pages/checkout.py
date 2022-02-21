@@ -1,5 +1,8 @@
 import logging
 import time
+
+import allure
+from allure_commons.types import AttachmentType
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.by import By
@@ -44,9 +47,11 @@ class CheckoutPage:
         self.cart_delete_product_class_desktop = 'at-cart-product-delete-desktop'
         self.cart_login_form_email_input = 'at-login-form-input-email'
         self.cart_login_form_password_input = 'at-login-form-input-password'
+        self.cart_discount_code_correct_message_class = 'm-cart-summary-box-1__discount-message--success'
+        #self.cart_
 
 
-
+    @allure.step('Getting single product data from basket')
     def get_product_data(self):
         wait = WebDriverWait(self.driver,3)
         name = self.driver.find_element_by_class_name(self.cart_product_title_class).text
@@ -63,15 +68,25 @@ class CheckoutPage:
         #        variants.append(variant.text)
         #except:
             pass
-        return name,price,quantity #,variants
+        allure.attach(self.driver.get_screenshot_as_png(), name='going to checkout', attachment_type=AttachmentType.PNG)
+        return name, price, quantity #,variants
 
-    def set_delivery_method(self):
+    def set_delivery_method(self, delivery='test'):
         delivery_methods = self.driver.find_elements_by_class_name(self.cart_shipment_name_class)
-        self.logger.info("There are {} available delivery methods".format(len(delivery_methods)))
+        delivery_methods_names = []
+        i = 0
         for method in delivery_methods:
-            method.click()
-            self.logger.info("Setting delivery method to {}".format(method.text))
-        return delivery_methods
+            delivery_methods_names.append(method.text)
+            time.sleep(0.3)
+        self.logger.info("There are {} available delivery methods:".format(len(delivery_methods)))
+        for i in range(len(delivery_methods)):
+            self.logger.info('{}'.format(delivery_methods_names[i]))
+        for method in delivery_methods:
+            time.sleep(0.2)
+            if method.text == delivery:
+                self.logger.info("Setting delivery method to {}".format(method.text))
+                method.click()
+        return delivery_methods, delivery_methods_names
 
     def set_payment_method(self):
         payment_methods = self.driver.find_elements_by_class_name(self.cart_payment_name_class)
@@ -84,9 +99,12 @@ class CheckoutPage:
     def use_discount_code(self, code):
         wait = WebDriverWait(self.driver,2)
         self.driver.find_element_by_class_name(self.cart_discount_code_label).click()
-        self.logger.info("Using discount code {}".format(code))
+        self.logger.info("Using discount code: {}".format(code))
         self.driver.find_element_by_class_name(self.cart_discount_code_input_class).send_keys(code)
         wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.cart_discount_value_class)))
+        message = self.driver.find_element_by_class_name(self.cart_discount_code_correct_message_class).text
+        self.logger.info('Getting discount message: {}'.format(message))
+        return message
 
     def next_step(self):
         self.driver.find_element_by_class_name(self.cart_next_button_class).click()

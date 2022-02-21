@@ -159,11 +159,13 @@ class ProductDetailPage:
 
     @allure.step('Going to checkout page')
     def go_to_checkout_page(self):
+        wait = WebDriverWait(self.driver,5)
         self.logger.info('Clicking basket button')
         self.driver.find_element_by_id(self.basket_button_id).click()
         self.logger.info('Redirecting to the checkout page')
         self.driver.find_element_by_class_name(self.aside_redirect_to_basket_class).click()
         allure.attach(self.driver.get_screenshot_as_png(), name='going to checkout', attachment_type=AttachmentType.PNG)
+        time.sleep(2)
 
 
 
