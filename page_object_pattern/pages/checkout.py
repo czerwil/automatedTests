@@ -7,6 +7,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.by import By
 
+
 class CheckoutPage:
 
     def __init__(self, driver):
@@ -48,7 +49,13 @@ class CheckoutPage:
         self.cart_login_form_email_input = 'at-login-form-input-email'
         self.cart_login_form_password_input = 'at-login-form-input-password'
         self.cart_discount_code_correct_message_class = 'm-cart-summary-box-1__discount-message--success'
-        #self.cart_
+        self.cart_discount_code_error_message_class = 'm-cart-summary-box-1__discount-message--fail'
+        self.cart_inpost_map_search_input_id = 'easypack-search'
+        self.cart_inpost_map_search_button_class = 'btn-search'
+        self.cart_inpost_map_select_class = 'select-link'
+        self.cart_inpost_map_locker_address_class = 'mobile-details-content'
+        self.cart_shipment_inpost_locker_details_class = 'inpost_chosen'
+        self.cart_inpost_map_search_list_class = 'inpost-search__item-list'
 
 
     @allure.step('Getting single product data from basket')
@@ -61,20 +68,20 @@ class CheckoutPage:
             price = self.driver.find_element_by_class_name(self.cart_product_price_after_discount_class).text
         except:
             price = self.driver.find_element_by_class_name(self.cart_product_price_original_class).text
-        #try:
-        #   available_variants = self.driver.find_elements_by_class_name(self.cart_product_variants_class)
-        #    variants = []
-        #    for variant in available_variants:
-        #        variants.append(variant.text)
-        #except:
-            pass
-        allure.attach(self.driver.get_screenshot_as_png(), name='going to checkout', attachment_type=AttachmentType.PNG)
-        return name, price, quantity #,variants
+       # try:
+       #     available_variants = self.driver.find_elements_by_class_name(self.cart_product_variants_class)
+       #     variants = []
+       #     for variant in available_variants:
+       #         variants.append(variant.text)
+       # except:
+       #        pass
+        #Nie jesteśmy na to jeszcze gotowi, bo z wyciągą nazwę wariantu łącznie z jego cechą
+        return name, price, quantity
 
+    @allure.step('Setting passed delivery method')
     def set_delivery_method(self, delivery='test'):
         delivery_methods = self.driver.find_elements_by_class_name(self.cart_shipment_name_class)
         delivery_methods_names = []
-        i = 0
         for method in delivery_methods:
             delivery_methods_names.append(method.text)
             time.sleep(0.3)
@@ -86,30 +93,50 @@ class CheckoutPage:
             if method.text == delivery:
                 self.logger.info("Setting delivery method to {}".format(method.text))
                 method.click()
-        return delivery_methods, delivery_methods_names
+        allure.attach(self.driver.get_screenshot_as_png(), name='delivery method has been set', attachment_type=AttachmentType.PNG)
+        return delivery_methods_names
 
-    def set_payment_method(self):
+    @allure.step('Setting passed payment method')
+    def set_payment_method(self, payment='test'):
         payment_methods = self.driver.find_elements_by_class_name(self.cart_payment_name_class)
-        self.logger.info("There are {} available payment methods".format(len(payment_methods)))
+        payment_methods_names = []
         for method in payment_methods:
-            method.click()
-            self.logger.info("Setting payment method to {}".format(method.text))
-        return payment_methods
+            payment_methods_names.append(method.text)
+            time.sleep(0.3)
+        self.logger.info("There are {} available payment methods".format(len(payment_methods)))
+        for i in range(len(payment_methods)):
+            self.logger.info('{}'.format(payment_methods_names[i]))
+        for method in payment_methods:
+            if method.text == payment:
+                self.logger.info("Setting payment method to {}".format(method.text))
+                method.click()
+        allure.attach(self.driver.get_screenshot_as_png(), name='payment method has been set', attachment_type=AttachmentType.PNG)
+        return payment_methods_names
 
+    @allure.step('Using discount code inside checkout and returns reply message')
     def use_discount_code(self, code):
         wait = WebDriverWait(self.driver,2)
         self.driver.find_element_by_class_name(self.cart_discount_code_label).click()
         self.logger.info("Using discount code: {}".format(code))
         self.driver.find_element_by_class_name(self.cart_discount_code_input_class).send_keys(code)
-        wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.cart_discount_value_class)))
-        message = self.driver.find_element_by_class_name(self.cart_discount_code_correct_message_class).text
+        try:
+            wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.cart_discount_code_correct_message_class)))
+            message = self.driver.find_element_by_class_name(self.cart_discount_code_correct_message_class).text
+        except:
+            wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.cart_discount_code_error_message_class)))
+            message = self.driver.find_element_by_class_name(self.cart_discount_code_error_message_class).text
         self.logger.info('Getting discount message: {}'.format(message))
+        allure.attach(self.driver.get_screenshot_as_png(), name='discount code has been applied to the cart', attachment_type=AttachmentType.PNG)
         return message
 
+    @allure.step('Going to next checkout step')
     def next_step(self):
         self.driver.find_element_by_class_name(self.cart_next_button_class).click()
         time.sleep(1)
+        allure.attach(self.driver.get_screenshot_as_png(), name='next checkout step', attachment_type=AttachmentType.PNG)
 
+
+    @allure.step('Completing delivery data inside checkout')
     def complete_delivery_data(self, delivery_data):
         self.logger.info('Completing delivery data')
         self.logger.info('Setting name to: {}'.format(delivery_data[0]))
@@ -129,7 +156,10 @@ class CheckoutPage:
         self.logger.info('Setting email to: {}'.format(delivery_data[7]))
         self.driver.find_element_by_name(self.email_input_name).send_keys(delivery_data[7])
         self.driver.find_element_by_class_name(self.rules_acceptation_checkbox_class).click()
+        allure.attach(self.driver.get_screenshot_as_png(), name='delivery data has been send', attachment_type=AttachmentType.PNG)
 
+
+    @allure.step('Checking if the summary is correct, returns True/False')
     def check_summary_correctness(self):
         sum = self.driver.find_element_by_class_name(self.cart_sum_value_class).text
         sum = float(sum.replace(',','.'))
@@ -141,15 +171,37 @@ class CheckoutPage:
         overall = float(overall.replace(',','.'))
         return sum - discount + delivery == overall
 
+    @allure.step('Logging in inside the checkout page')
     def login_inside_checkout(self, credentials):
         self.driver.find_element_by_class_name(self.cart_login_form_email_input).send_keys(credentials[0])
         self.driver.find_element_by_class_name(self.cart_login_form_password_input).send_keys(credentials[1])
         self.driver.find_element_by_class_name(self.cart_login_submit).click()
+        allure.attach(self.driver.get_screenshot_as_png(), name='removing product from the cart', attachment_type=AttachmentType.PNG)
         time.sleep(2)
 
+    @allure.step('Removing single product from cart')
     def remove_products_from_the_cart(self):
         self.driver.find_element_by_class_name(self.cart_delete_product_class_desktop).click()
+        allure.attach(self.driver.get_screenshot_as_png(), name='removing product from the cart', attachment_type=AttachmentType.PNG)
         #po klasie nie lapie - lapie po elemencie path
+
+    @allure.step('Setting parcel locker (Paczkomat)')
+    def set_parcel_locker(self,locker_name):
+        wait = WebDriverWait(self.driver, 5)
+        self.driver.find_element_by_id(self.cart_inpost_map_search_input_id).send_keys(locker_name)
+        wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.cart_inpost_map_search_list_class)))
+        self.driver.find_element_by_class_name(self.cart_inpost_map_search_button_class).click()
+        self.logger.info("Searching for parcel locker: {}".format(locker_name))
+        wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.cart_inpost_map_locker_address_class)))
+        locker_address = self.driver.find_element_by_class_name(self.cart_inpost_map_locker_address_class).text
+        self.logger.info("Address of the selected locker is: {}".format(locker_address))
+        self.driver.find_element_by_class_name(self.cart_inpost_map_select_class).click()
+        allure.attach(self.driver.get_screenshot_as_png(), name='selecting the parcel locker', attachment_type=AttachmentType.PNG)
+        self.logger.info("Locker has been selected".format(locker_address))
+        locker_address_checkout = self.driver.find_element_by_class_name(self.cart_shipment_inpost_locker_details_class).text
+        locker_address = locker_address.replace('\n',', ')
+        return locker_address, locker_address_checkout
+
 
 
 

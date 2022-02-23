@@ -1,5 +1,7 @@
 import logging
 import time
+
+import allure
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
@@ -28,8 +30,10 @@ class MyAccountPage:
         self.company_name_input_name = 'company_name'
         self.nip_input_name = 'company_nip'
         self.change_to_company_radio_button_class = 'c-radio-field__label'
+        self.change_password_new_password_input_name = 'password'
+        self.change_password_confirm_password_input_name = 'password_confirm'
 
-
+    @allure.step('Logging out of account')
     def logout(self):
         self.logger.info('Clicking on logout button')
         self.driver.find_element_by_class_name(self.logout_button_class).click()

@@ -165,7 +165,7 @@ class ProductDetailPage:
         self.logger.info('Redirecting to the checkout page')
         self.driver.find_element_by_class_name(self.aside_redirect_to_basket_class).click()
         allure.attach(self.driver.get_screenshot_as_png(), name='going to checkout', attachment_type=AttachmentType.PNG)
-        time.sleep(2)
+        time.sleep(1)
 
 
 

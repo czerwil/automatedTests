@@ -1,3 +1,4 @@
+import allure
 import pytest
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -6,16 +7,12 @@ from page_object_pattern.pages.listing_page import ListingPage
 from page_object_pattern.pages.product_card2 import ProductDetailPage
 from page_object_pattern.pages.checkout import CheckoutPage
 
+
+@pytest.mark.usefixtures('setup')
 class TestAddProductsToBasket:
 
-    @pytest.fixture()
-    def setup(self):
-        self.driver = webdriver.Chrome(ChromeDriverManager().install())
-        self.driver.implicitly_wait(2)
-        self.driver.maximize_window()
-        yield
-        self.driver.quit()
-
+    @allure.title('Test of adding single product to the basket')
+    @allure.description("Adding single product from product detail page to the basket")
     def test_add_single_product_to_basket(self, setup):
         self.driver.get('http://testshop.ovel.pl/sabi')
         pdp = ProductDetailPage(self.driver)
