@@ -52,8 +52,13 @@ class ProductDetailPage:
         self.product_added_to_wishlist_tooltip_text_class = 'js-check-tooltip-text'
         self.product_add_to_basket_buttons_class = 'js-product-card-buttons'
         self.aside_redirect_to_basket_class = 'at-aside-cart-redirect'
+        self.product_delivery_from_value_class = 'c-delivery-info__value'
+        self.product_image_option_class = 'js-image-option'
+        self.product_option_select_button_class = 'js-option-select-label'
+        self.product_image_option_title_class = 'js-image-option-title'
+        self.product_selected_option_name_class = 'js-option-select-name'
 
-    @allure.step("Setting product's variants ")
+    @allure.step("Setting product's variants")
     def set_variants(self):
         try:
             color = self.driver.find_element_by_class_name(self.product_variant_color_class).text
@@ -69,6 +74,20 @@ class ProductDetailPage:
             pass
         allure.attach(self.driver.get_screenshot_as_png(), name='product added to wishlist', attachment_type=AttachmentType.PNG)
         time.sleep(2)
+
+    @allure.step("Setting option of product")
+    def set_option(self):
+        self.driver.find_element_by_class_name(self.product_option_select_button_class).click()
+        self.logger.info('Clicking on option select button')
+        time.sleep(1)
+        option_name = self.driver.find_element_by_class_name(self.product_image_option_title_class).text
+        self.driver.find_element_by_class_name(self.product_image_option_class).click()
+        self.logger.info('Selecting option: {}'.format(option_name))
+        selected_option_name = self.driver.find_element_by_class_name(self.product_selected_option_name_class).text
+        self.logger.info('Selected option name is: {}'.format(selected_option_name))
+        allure.attach(self.driver.get_screenshot_as_png(), name='option has been selected', attachment_type=AttachmentType.PNG)
+        return option_name, selected_option_name
+
 
     @allure.step("Adding single product to wishlist")
     def add_to_wishlist(self):

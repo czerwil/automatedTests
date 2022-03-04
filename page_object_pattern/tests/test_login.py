@@ -16,7 +16,7 @@ class TestLogIn:
     def test_sign_in(self, setup):
         self.driver.get('http://testshop.ovel.pl')
         homepage = Homepage(self.driver)
-        homepage.accept_cookie_policy()
+        homepage.close_cookies_popup()
         homepage.sign_in('test@test.com', 'zaq12wsx')
         url = homepage.go_to_account_page()
         assert url == 'http://testshop.ovel.pl/moje_konto', "Niepoprawny adres strony - nie udało się przejść do strony Moje konto"
@@ -27,7 +27,7 @@ class TestLogIn:
         self.driver.get('http://testshop.ovel.pl')
         homepage = Homepage(self.driver)
         account_page = MyAccountPage(self.driver)
-        homepage.accept_cookie_policy()
+        homepage.close_cookies_popup()
         homepage.sign_in('test@test.com', 'zaq12wsx')
         account_page_url = homepage.go_to_account_page()
         account_page.logout()

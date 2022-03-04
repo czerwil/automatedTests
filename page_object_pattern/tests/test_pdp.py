@@ -44,6 +44,15 @@ class TestProductDetailPage:
         pages = pdp.pagination_of_opinions()
         assert pages[0] == pages[1], "Błąd - nie można przejść do wszystkich stron paginacji opinii"
 
+    @allure.title('Test of setting option')
+    @allure.description('Selecting image option of the product')
+    def test_select_option(self, setup):
+        self.driver.get('http://testshop.ovel.pl/k089-1')
+        pdp = ProductDetailPage(self.driver)
+        pdp.close_cookies_popup()
+        options = pdp.set_option()
+        assert options[0] == options[1], "Nazwa wybranej opcji nie wyświetla się"
+
 
 
 

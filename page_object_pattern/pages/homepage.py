@@ -1,6 +1,8 @@
 import time
-
 import logging
+
+import allure
+from allure_commons.types import AttachmentType
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.keys import Keys
@@ -35,17 +37,22 @@ class Homepage:
         self.my_account_link_text = 'Moje dane'
         self.newsletter_pop_up_class = 'l-popup__message'
         self.newsletter_pop_up_text_class = 'l-popup__message-content'
+        self.menu_items_class = 'js-menu-1-item'
+        self.listing_header_class = 'at-listing-header'
 
-
-
-
+    @allure.step('Performing search')
     def perform_search(self,query):
+        self.logger.info('Performing search of: {}'.format(query))
         self.driver.find_element_by_id(self.search_query_id).click()
         self.driver.find_element_by_id(self.search_query_id).send_keys(query + Keys.ENTER)
+        allure.attach(self.driver.get_screenshot_as_png(), name='performing search',
+                      attachment_type=AttachmentType.PNG)
 
-    def accept_cookie_policy(self):
-        self.driver.find_element_by_class_name(self.cookie_popup_accept_button_class).click()
+    @allure.step('Closing the cookies popup')
+    def close_cookies_popup(self):
+        self.driver.find_element_by_class_name(self.cookie_popup_accept_class).click()
 
+    @allure.step('Trying to subscribe to newsletter with incorrect e-mail address')
     def subscribe_to_newsletter_fail(self, email):
         self.logger.info("Subscribing for newsletter:")
         self.logger.info("Sending email address{}".format(email))
@@ -55,8 +62,11 @@ class Homepage:
         time.sleep(1)
         alert = self.driver.find_element_by_xpath(self.newsletter_alert_span_xpath)
         self.logger.info("Got alert message: {}".format(alert.text))
+        allure.attach(self.driver.get_screenshot_as_png(), name='incorrect email address',
+                      attachment_type=AttachmentType.PNG)
         return alert
 
+    @allure.step('Trying to subscribe to newsletter with correct e-mail address')
     def subscribe_to_newsletter_success(self, email):
         wait = WebDriverWait(self.driver,3)
         self.logger.info("Subscribing for newsletter:")
@@ -67,9 +77,11 @@ class Homepage:
         wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME,self.newsletter_pop_up_class)))
         pop_up_text = self.driver.find_element_by_class_name(self.newsletter_pop_up_text_class).text
         self.logger.info("Got message: {}".format(pop_up_text))
+        allure.attach(self.driver.get_screenshot_as_png(), name='subscribed to newsletter',
+                      attachment_type=AttachmentType.PNG)
         return pop_up_text
 
-
+    @allure.step('Registering a new account')
     def register_account(self, email, password):
         self.driver.find_element_by_id(self.account_button_id).click()
         self.driver.find_element_by_class_name(self.switch_to_register_form_class).click()
@@ -78,6 +90,7 @@ class Homepage:
         self.driver.find_element_by_name(self.login_form_confirm_password_input_name).send_keys(password)
         self.driver.find_element_by_class_name(self.register_form_terms_of_condition_checkbox_label_class).click()
 
+    @allure.step('Logging in to an existing account')
     def sign_in(self, email, password):
         self.driver.find_element_by_id(self.account_button_id).click()
         self.logger.info(f'Passing email address: {email} to email input)')
@@ -86,13 +99,42 @@ class Homepage:
         self.driver.find_element_by_name(self.login_form_password_input_name).send_keys(password)
         self.logger.info('Sending login form')
         self.driver.find_element_by_class_name(self.login_confirm_button_class).click()
+        allure.attach(self.driver.get_screenshot_as_png(), name='logging in',
+                      attachment_type=AttachmentType.PNG)
 
+    @allure.step('Redirecting to the account page')
     def go_to_account_page(self):
         time.sleep(2)
         self.driver.find_element_by_id(self.account_button_id).click()
         self.logger.info('Going to account settings page')
         self.driver.find_element_by_link_text(self.my_account_link_text).click()
+        allure.attach(self.driver.get_screenshot_as_png(), name='redirecting to the account page',
+                      attachment_type=AttachmentType.PNG)
         return self.driver.current_url
+
+    @allure.step('Selecting passed category on header menu')
+    def select_menu_category(self, category):
+        wait = WebDriverWait(self.driver,3)
+        menu_items = self.driver.find_elements_by_class_name(self.menu_items_class)
+        menu_items_names = []
+        for item in menu_items:
+            menu_items_names.append(item.text)
+        self.logger.info('There are {} menu items: {}'.format(len(menu_items),menu_items_names))
+        for item in menu_items:
+            if item.text == category:
+                self.logger.info('Clicking on {}'.format(item.text))
+                selected_item = item.text
+                item.click()
+                break
+        wait.until(expected_conditions.url_changes)
+        listing_header = self.driver.find_element_by_class_name(self.listing_header_class).text
+        self.logger.info('Successful redirect to the {}'.format(listing_header))
+        allure.attach(self.driver.get_screenshot_as_png(), name='redirected to the selected menu category',
+                      attachment_type=AttachmentType.PNG)
+        return selected_item == listing_header
+
+
+
 
 
 

@@ -3,7 +3,6 @@ import pytest
 from page_object_pattern.pages.homepage import Homepage
 from page_object_pattern.pages.listing_page import ListingPage
 
-
 @pytest.mark.usefixtures('setup')
 class TestListing:
 
@@ -87,6 +86,10 @@ class TestListing:
         for price in prices:
             price_value = float(price.replace(',', '.'))
             assert price_value >= min and price_value <= max, "Błąd w filtrowaniu po cenie"
+
+    def test_counting_products_on_listing(self):
+        self.driver.get('http://testshop.ovel.pl/')
+
 
 #Inputy w filtrach po wyczyszczeniu i zgubieniu focusa automatycznie się uzupełniają przez co nie mogę wprowadzić wartości
 

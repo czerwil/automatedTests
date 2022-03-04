@@ -15,7 +15,7 @@ class CheckoutPage:
         self.logger = logging.getLogger(__name__)
         self.cart_sum_value_class = 'js-cart-sum-value'
         self.cart_delivery_value_class = 'js-cart-delivery-value'
-        self.cart_discount_value_class ='at-cart-discount-value'
+        self.cart_discount_value_class = 'at-cart-discount-value'
         self.cart_overall_value_class = 'js-cart-sum-overal-value'
         self.cart_next_button_class = 'js-cart-next'
         self.cart_back_button_class = 'js-cart-back'
@@ -38,7 +38,7 @@ class CheckoutPage:
         self.cart_street_input_name = 'street'
         self.cart_home_number_input_name = 'home_number'
         self.cart_postcode_input_name = 'postcode'
-        self.cart_city_input_name ='city'
+        self.cart_city_input_name = 'city'
         self.phone_input_name = 'phone'
         self.email_input_name = 'email'
         self.rules_acceptation_checkbox_class = 'c-checkbox-field__checkbox-container'
@@ -59,25 +59,25 @@ class CheckoutPage:
         self.cart_empty_cart_header_class = 'm-cart-empty-1__headline'
         self.cart_back_to_store_link_text = 'Wróć do sklepu'
 
-
     @allure.step('Getting single product data from basket')
     def get_product_data(self):
-        wait = WebDriverWait(self.driver,3)
+        wait = WebDriverWait(self.driver, 3)
         name = self.driver.find_element_by_class_name(self.cart_product_title_class).text
         quantity = self.driver.find_element_by_class_name(self.cart_product_quantity_input_class).get_attribute('value')
         try:
-            wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME,self.cart_product_price_after_discount_class)))
+            wait.until(expected_conditions.visibility_of_element_located(
+                (By.CLASS_NAME, self.cart_product_price_after_discount_class)))
             price = self.driver.find_element_by_class_name(self.cart_product_price_after_discount_class).text
         except:
             price = self.driver.find_element_by_class_name(self.cart_product_price_original_class).text
-       # try:
-       #     available_variants = self.driver.find_elements_by_class_name(self.cart_product_variants_class)
-       #     variants = []
-       #     for variant in available_variants:
-       #         variants.append(variant.text)
-       # except:
-       #        pass
-        #Nie jesteśmy na to jeszcze gotowi, bo z wyciągą nazwę wariantu łącznie z jego cechą
+        # try:
+        #     available_variants = self.driver.find_elements_by_class_name(self.cart_product_variants_class)
+        #     variants = []
+        #     for variant in available_variants:
+        #         variants.append(variant.text)
+        # except:
+        #        pass
+        # Nie jesteśmy na to jeszcze gotowi, bo z wyciągą nazwę wariantu łącznie z jego cechą
         return name, price, quantity
 
     @allure.step('Setting passed delivery method')
@@ -95,7 +95,8 @@ class CheckoutPage:
             if method.text == delivery:
                 self.logger.info("Setting delivery method to {}".format(method.text))
                 method.click()
-        allure.attach(self.driver.get_screenshot_as_png(), name='delivery method has been set', attachment_type=AttachmentType.PNG)
+        allure.attach(self.driver.get_screenshot_as_png(), name='delivery method has been set',
+                      attachment_type=AttachmentType.PNG)
         return delivery_methods_names
 
     @allure.step('Setting passed payment method')
@@ -112,31 +113,35 @@ class CheckoutPage:
             if method.text == payment:
                 self.logger.info("Setting payment method to {}".format(method.text))
                 method.click()
-        allure.attach(self.driver.get_screenshot_as_png(), name='payment method has been set', attachment_type=AttachmentType.PNG)
+        allure.attach(self.driver.get_screenshot_as_png(), name='payment method has been set',
+                      attachment_type=AttachmentType.PNG)
         return payment_methods_names
 
     @allure.step('Using discount code inside checkout and returns reply message')
     def use_discount_code(self, code):
-        wait = WebDriverWait(self.driver,2)
+        wait = WebDriverWait(self.driver, 2)
         self.driver.find_element_by_class_name(self.cart_discount_code_label).click()
         self.logger.info("Using discount code: {}".format(code))
         self.driver.find_element_by_class_name(self.cart_discount_code_input_class).send_keys(code)
         try:
-            wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.cart_discount_code_correct_message_class)))
+            wait.until(expected_conditions.visibility_of_element_located(
+                (By.CLASS_NAME, self.cart_discount_code_correct_message_class)))
             message = self.driver.find_element_by_class_name(self.cart_discount_code_correct_message_class).text
         except:
-            wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.cart_discount_code_error_message_class)))
+            wait.until(expected_conditions.visibility_of_element_located(
+                (By.CLASS_NAME, self.cart_discount_code_error_message_class)))
             message = self.driver.find_element_by_class_name(self.cart_discount_code_error_message_class).text
         self.logger.info('Getting discount message: {}'.format(message))
-        allure.attach(self.driver.get_screenshot_as_png(), name='discount code has been applied to the cart', attachment_type=AttachmentType.PNG)
+        allure.attach(self.driver.get_screenshot_as_png(), name='discount code has been applied to the cart',
+                      attachment_type=AttachmentType.PNG)
         return message
 
     @allure.step('Going to next checkout step')
     def next_step(self):
         self.driver.find_element_by_class_name(self.cart_next_button_class).click()
         time.sleep(1)
-        allure.attach(self.driver.get_screenshot_as_png(), name='next checkout step', attachment_type=AttachmentType.PNG)
-
+        allure.attach(self.driver.get_screenshot_as_png(), name='next checkout step',
+                      attachment_type=AttachmentType.PNG)
 
     @allure.step('Completing delivery data inside checkout')
     def complete_delivery_data(self, delivery_data):
@@ -158,19 +163,19 @@ class CheckoutPage:
         self.logger.info('Setting email to: {}'.format(delivery_data[7]))
         self.driver.find_element_by_name(self.email_input_name).send_keys(delivery_data[7])
         self.driver.find_element_by_class_name(self.rules_acceptation_checkbox_class).click()
-        allure.attach(self.driver.get_screenshot_as_png(), name='delivery data has been send', attachment_type=AttachmentType.PNG)
-
+        allure.attach(self.driver.get_screenshot_as_png(), name='delivery data has been send',
+                      attachment_type=AttachmentType.PNG)
 
     @allure.step('Checking if the summary is correct, returns True/False')
     def check_summary_correctness(self):
         sum = self.driver.find_element_by_class_name(self.cart_sum_value_class).text
-        sum = float(sum.replace(',','.'))
+        sum = float(sum.replace(',', '.'))
         discount = self.driver.find_element_by_class_name(self.cart_discount_value_class).text
-        discount = float(discount.replace(',','.'))
+        discount = float(discount.replace(',', '.'))
         delivery = self.driver.find_element_by_class_name(self.cart_delivery_value_class).text
-        delivery = float(delivery.replace(',','.'))
+        delivery = float(delivery.replace(',', '.'))
         overall = self.driver.find_element_by_class_name(self.cart_overall_value_class).text
-        overall = float(overall.replace(',','.'))
+        overall = float(overall.replace(',', '.'))
         return sum - discount + delivery == overall
 
     @allure.step('Logging in inside the checkout page')
@@ -178,37 +183,43 @@ class CheckoutPage:
         self.driver.find_element_by_class_name(self.cart_login_form_email_input).send_keys(credentials[0])
         self.driver.find_element_by_class_name(self.cart_login_form_password_input).send_keys(credentials[1])
         self.driver.find_element_by_class_name(self.cart_login_submit).click()
-        allure.attach(self.driver.get_screenshot_as_png(), name='removing product from the cart', attachment_type=AttachmentType.PNG)
+        allure.attach(self.driver.get_screenshot_as_png(), name='logging in', attachment_type=AttachmentType.PNG)
         time.sleep(2)
 
     @allure.step('Removing single product from cart')
     def remove_product_from_the_cart(self):
         self.logger.info("Removing product from the cart")
         self.driver.find_element_by_class_name(self.cart_delete_product_class_desktop).click()
-        allure.attach(self.driver.get_screenshot_as_png(), name='removing product from the cart', attachment_type=AttachmentType.PNG)
-        #po klasie nie lapie - lapie po elemencie path
+        allure.attach(self.driver.get_screenshot_as_png(), name='removing product from the cart',
+                      attachment_type=AttachmentType.PNG)
+        # po klasie nie lapie - lapie po elemencie path
 
     @allure.step('Setting parcel locker (Paczkomat)')
-    def set_parcel_locker(self,locker_name):
+    def set_parcel_locker(self, locker_name):
         wait = WebDriverWait(self.driver, 5)
         self.driver.find_element_by_id(self.cart_inpost_map_search_input_id).send_keys(locker_name)
-        wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.cart_inpost_map_search_list_class)))
+        wait.until(
+            expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.cart_inpost_map_search_list_class)))
         self.driver.find_element_by_class_name(self.cart_inpost_map_search_button_class).click()
         self.logger.info("Searching for parcel locker: {}".format(locker_name))
-        wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.cart_inpost_map_locker_address_class)))
+        wait.until(expected_conditions.visibility_of_element_located(
+            (By.CLASS_NAME, self.cart_inpost_map_locker_address_class)))
         locker_address = self.driver.find_element_by_class_name(self.cart_inpost_map_locker_address_class).text
         self.logger.info("Address of the selected locker is: {}".format(locker_address))
         self.driver.find_element_by_class_name(self.cart_inpost_map_select_class).click()
-        allure.attach(self.driver.get_screenshot_as_png(), name='selecting the parcel locker', attachment_type=AttachmentType.PNG)
+        allure.attach(self.driver.get_screenshot_as_png(), name='selecting the parcel locker',
+                      attachment_type=AttachmentType.PNG)
         self.logger.info("Locker has been selected".format(locker_address))
-        locker_address_checkout = self.driver.find_element_by_class_name(self.cart_shipment_inpost_locker_details_class).text
-        locker_address = locker_address.replace('\n',', ')
+        locker_address_checkout = self.driver.find_element_by_class_name(
+            self.cart_shipment_inpost_locker_details_class).text
+        locker_address = locker_address.replace('\n', ', ')
         return locker_address, locker_address_checkout
 
     @allure.step('Checking that basket is empty and redirecting to the store homepage')
     def check_that_basket_is_empty(self):
         wait = WebDriverWait(self.driver, 5)
-        wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.cart_empty_cart_header_class)))
+        wait.until(
+            expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.cart_empty_cart_header_class)))
         header = self.driver.find_element_by_class_name(self.cart_empty_cart_header_class).text
         self.logger.info('{}'.format(header))
         self.logger.info("Redirecting to the store homepage")
@@ -216,24 +227,3 @@ class CheckoutPage:
         if header == 'Twój koszyk jest pusty':
             allure.attach(self.driver.get_screenshot_as_png(), name='Empty basket', attachment_type=AttachmentType.PNG)
             return True
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
