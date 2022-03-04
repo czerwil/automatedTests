@@ -1,10 +1,12 @@
 import time
-
 import logging
+import allure
+from allure_commons.types import AttachmentType
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.by import By
+
 
 class WishlistPage:
 
@@ -20,10 +22,12 @@ class WishlistPage:
         self.cart_count_class = 'js-cart-count'
         self.cart_aside_product_title_class = 'c-aside-product__title'
 
+    @allure.step('Getting title of the single product')
     def get_product_title(self):
         product_title = self.driver.find_element_by_class_name(self.product_title_class).text
         return product_title
 
+    @allure.step('Adding all products from wishlist to the basket')
     def add_all_products_to_basket(self):
         self.logger.info("Selecting all products from wishlist")
         self.driver.find_element_by_class_name(self.select_all_products_checkbox_class).click()
@@ -36,4 +40,5 @@ class WishlistPage:
         cart_count = self.driver.find_element_by_class_name(self.cart_count_class).text
         product_name = self.driver.find_element_by_class_name(self.cart_aside_product_title_class).text
         self.logger.info("There are {} products in cart: {}".format(cart_count,product_name))
+        allure.attach(self.driver.get_screenshot_as_png(), name='Products added to the basket', attachment_type=AttachmentType.PNG)
         return cart_count, product_name

@@ -1,21 +1,29 @@
-import pytest
-import allure
 from random import randrange
+import allure
+import pytest
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
+from page_object_pattern.pages.homepage import Homepage
+from page_object_pattern.pages.listing_page import ListingPage
 from page_object_pattern.pages.product_card2 import ProductDetailPage
+from page_object_pattern.pages.checkout import CheckoutPage
 
 
+@pytest.mark.usefixtures('setup')
+class TestProductDetailPage:
 
-class TestWriteOpinion:
-
-    @pytest.fixture()
-    def setup(self):
-        self.driver = webdriver.Chrome(ChromeDriverManager(log_level=0).install())
-        self.driver.implicitly_wait(5)
-        self.driver.maximize_window()
-        yield
-        self.driver.quit()
+    @allure.title('Test of adding single product to the basket')
+    @allure.description("Adding single product from product detail page to the basket")
+    def test_add_single_product_to_basket(self, setup):
+        self.driver.get('http://testshop.ovel.pl/sabi')
+        pdp = ProductDetailPage(self.driver)
+        basket = CheckoutPage(self.driver)
+        pdp.close_cookies_popup()
+        pdp.set_variants()
+        pdp_data = pdp.add_to_basket()
+        pdp.go_to_checkout_page()
+        basket_data = basket.get_product_data()
+        assert pdp_data == basket_data, "Nazwa produktu w koszyku jest nieprawidłowa"
 
     @allure.title('Test of adding new opinion')
     @allure.description('Writing and sending opinion of product')
@@ -35,3 +43,9 @@ class TestWriteOpinion:
         pdp.close_cookies_popup()
         pages = pdp.pagination_of_opinions()
         assert pages[0] == pages[1], "Błąd - nie można przejść do wszystkich stron paginacji opinii"
+
+
+
+
+
+

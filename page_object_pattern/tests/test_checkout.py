@@ -57,6 +57,19 @@ class TestCheckout:
         #Adres w pop-upie ma inna kolejnosc niz ten pokazywany w koszyku - czekamy na poprawkie
         assert locker_address[0] in locker_address[1]
 
+    @allure.title('Test of removing product from the basket')
+    @allure.description('Adding single product to the basket and then removing it and checking if it is not present')
+    def test_remove_product_from_basket(self, setup):
+        self.driver.get('http://testshop.ovel.pl/m63-2')
+        pdp = ProductDetailPage(self.driver)
+        checkout = CheckoutPage(self.driver)
+        pdp.close_cookies_popup()
+        pdp.add_to_basket()
+        pdp.go_to_checkout_page()
+        before = checkout.get_product_data()
+        checkout.remove_product_from_the_cart()
+        assert checkout.check_that_basket_is_empty() == True, "Koszyk nie został opróżniony"
+
 
 
 

@@ -1,5 +1,6 @@
 import time
 
+import allure
 import pytest
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -10,21 +11,11 @@ from page_object_pattern.pages.checkout import CheckoutPage
 from page_object_pattern.pages.wishlist import WishlistPage
 
 
-class TestAddToWishlist:
+@pytest.mark.usefixtures('setup')
+class TestWishlist:
 
-    @pytest.fixture()
-    def setup(self):
-        options = webdriver.ChromeOptions()
-        options.add_argument("--disable-gpu")
-        #options.add_argument("--headless")
-        options.add_argument('window-size=1920x1080');
-        options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
-        self.driver.implicitly_wait(2)
-        self.driver.maximize_window()
-        yield
-        self.driver.quit()
-
+    @allure.title('Test of adding product from pdp to the wishlist')
+    @allure.description('Adding product to wishlist from the product detail page')
     def test_add_product_to_wishlist(self, setup):
         self.driver.get('http://testshop.ovel.pl/sabi')
         pdp = ProductDetailPage(self.driver)
@@ -38,6 +29,8 @@ class TestAddToWishlist:
         product_title = wishlist.get_product_title()
         assert info[2] == product_title, "Tytuł produktu z wishlisty nie jest taki sam jak tytul na karcie produktu"
 
+    @allure.title('Test of adding product from wishlist to the basket')
+    @allure.description('Adding product to wishlist and then going to the wishlist page and adding product from there to the basket')
     def test_add_product_do_card_from_wishlist(self, setup):
         self.driver.get('http://testshop.ovel.pl/sabi')
         pdp = ProductDetailPage(self.driver)

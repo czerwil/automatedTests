@@ -5,7 +5,7 @@ from page_object_pattern.pages.listing_page import ListingPage
 
 
 @pytest.mark.usefixtures('setup')
-class TestProductsSearch:
+class TestListing:
 
     @allure.title('Test of search form')
     @allure.description('Typing query in search form and then performing search and checking that results are matching the search query')
@@ -29,6 +29,8 @@ class TestProductsSearch:
         pages = listing.pagination()
         assert pages[0] == int(pages[1]), "Stron powinno być " + str(pages[0]) + ", a ostatnia strona ma numer " + pages[1]
 
+    @allure.title('Test of sorting products by price ascending')
+    @allure.description('Searching for products and then sorting them by price ascending')
     def test_sort_by_price_asc(self, setup):
         self.driver.get('http://testshop.ovel.pl/bluzki')
         listing = ListingPage(self.driver)
@@ -39,6 +41,8 @@ class TestProductsSearch:
             assert cheaper <= price_value, "Blad w sortowaniu po cenie"
             cheaper = price_value
 
+    @allure.title('Test of sorting products by price descending')
+    @allure.description('Searching for products and then sorting them by price descending')
     def test_sort_by_price_desc(self, setup):
         self.driver.get('http://testshop.ovel.pl/bluzki')
         listing = ListingPage(self.driver)
@@ -49,6 +53,8 @@ class TestProductsSearch:
             assert more_expensive >= price_value, "Blad w sortowaniu po cenie"
             more_expensive = price_value
 
+    @allure.title('Test of sorting products by name ascending')
+    @allure.description('Searching for products and then sorting them by name ascending')
     def test_sort_by_name_asc(self, setup):
         self.driver.get('http://testshop.ovel.pl/bluzki')
         listing = ListingPage(self.driver)
@@ -58,6 +64,8 @@ class TestProductsSearch:
             assert first_title <= title.text, "Blad w sortowaniu po nazwie"
             first_title = title.text
 
+    @allure.title('Test of sorting products by name descending')
+    @allure.description('Searching for products and then sorting them by name descending')
     def test_sort_by_name_desc(self, setup):
         self.driver.get('http://testshop.ovel.pl/bluzki')
         listing = ListingPage(self.driver)
@@ -68,6 +76,8 @@ class TestProductsSearch:
             assert first_title >= next_title, "Blad w sortowaniu po nazwie"
             first_title = next_title
 
+    @allure.title('Test of filtering products by price')
+    @allure.description('Filtering products by price and then checking that prices of products are in selected range')
     def test_filtering_products(self, setup):
         self.driver.get('http://testshop.ovel.pl/bluzki')
         min = 50

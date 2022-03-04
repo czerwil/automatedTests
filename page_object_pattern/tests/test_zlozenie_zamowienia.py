@@ -1,4 +1,6 @@
 import time
+
+import allure
 import pytest
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -11,6 +13,8 @@ from page_object_pattern.pages.checkout import CheckoutPage
 @pytest.mark.usefixtures('setup')
 class TestPlaceOrder:
 
+    @allure.title('Test of placing an order')
+    @allure.description('Adding product to the basket and then going through the checkout and placing order')
     def test_place_order(self, setup):
         self.driver.get('http://testshop.ovel.pl/fanita')
         pdp = ProductDetailPage(self.driver)
@@ -29,9 +33,10 @@ class TestPlaceOrder:
         delivery_data = ['Jan', 'Kowalski', 'Szeroka', '14', '01-706', 'Warszawa', '500600900', 'k.czerwinski@netgraf.pl']
         checkout.complete_delivery_data(delivery_data)
         checkout.next_step()
-
         checkout.next_step()
 
+    @allure.title('Test of placing an order')
+    @allure.description('Adding product to the basket and then going through the checkout and placing order')
     def test_log_in_inside_checkout(self, setup):
         self.driver.get('http://testshop.ovel.pl/fanita')
         pdp = ProductDetailPage(self.driver)
@@ -47,7 +52,7 @@ class TestPlaceOrder:
         time.sleep(5)
         products_data_after_login = checkout.get_product_data()
         assert products_data == products_data_after_login, 'Po zalogowaniu się w koszyku zniknęły wcześniej dodane produkty'
-        checkout.remove_products_from_the_cart()
+        checkout.remove_product_from_the_cart()
 
 
 

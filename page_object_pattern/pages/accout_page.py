@@ -1,7 +1,8 @@
 import logging
 import time
-
 import allure
+from allure_commons.types import AttachmentType
+from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
@@ -37,6 +38,19 @@ class MyAccountPage:
     def logout(self):
         self.logger.info('Clicking on logout button')
         self.driver.find_element_by_class_name(self.logout_button_class).click()
+        allure.attach(self.driver.get_screenshot_as_png(), name='Products added to the basket', attachment_type=AttachmentType.PNG)
+
+    @allure.step('Changing password')
+    def change_password(self, password):
+        self.driver.find_element_by_class_name(self.change_password_button_class).click()
+        self.logger.info('Clicking on the "Change password" button')
+        self.driver.find_element_by_name(self.change_password_new_password_input_name).send_keys(password)
+        self.driver.find_element_by_name(self.change_password_confirm_password_input_name).send_keys(password)
+        self.driver.find_element_by_name(self.change_password_confirm_password_input_name).send_keys(password+Keys.ENTER)
+
+
+
+
 
 
 

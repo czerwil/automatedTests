@@ -1,4 +1,6 @@
 import time
+
+import allure
 import pytest
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -6,21 +8,11 @@ from page_object_pattern.pages.homepage import Homepage
 from page_object_pattern.pages.accout_page import MyAccountPage
 
 
-class TestRegisterAccount:
+@pytest.mark.usefixtures('setup')
+class TestLogIn:
 
-    @pytest.fixture()
-    def setup(self):
-        options = webdriver.ChromeOptions()
-        options.add_argument("--disable-gpu")
-        #options.add_argument("--headless")
-        options.add_argument('window-size=1920x1080');
-        options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
-        self.driver.implicitly_wait(8)
-        self.driver.maximize_window()
-        yield
-        self.driver.quit()
-
+    @allure.title('Test of logging in')
+    @allure.description('Logging in to existing account and then going to the account page')
     def test_sign_in(self, setup):
         self.driver.get('http://testshop.ovel.pl')
         homepage = Homepage(self.driver)
@@ -29,6 +21,8 @@ class TestRegisterAccount:
         url = homepage.go_to_account_page()
         assert url == 'http://testshop.ovel.pl/moje_konto', "Niepoprawny adres strony - nie udało się przejść do strony Moje konto"
 
+    @allure.title('Test of logging out')
+    @allure.description('Logging in to existing account and then going to the account page and logging out, then checking that account page is not available')
     def test_sign_out(self,setup):
         self.driver.get('http://testshop.ovel.pl')
         homepage = Homepage(self.driver)

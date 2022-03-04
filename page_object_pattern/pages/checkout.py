@@ -56,6 +56,8 @@ class CheckoutPage:
         self.cart_inpost_map_locker_address_class = 'mobile-details-content'
         self.cart_shipment_inpost_locker_details_class = 'inpost_chosen'
         self.cart_inpost_map_search_list_class = 'inpost-search__item-list'
+        self.cart_empty_cart_header_class = 'm-cart-empty-1__headline'
+        self.cart_back_to_store_link_text = 'Wróć do sklepu'
 
 
     @allure.step('Getting single product data from basket')
@@ -64,7 +66,7 @@ class CheckoutPage:
         name = self.driver.find_element_by_class_name(self.cart_product_title_class).text
         quantity = self.driver.find_element_by_class_name(self.cart_product_quantity_input_class).get_attribute('value')
         try:
-            wait.until(expected_conditions.text_to_be_present_in_element((By.CLASS_NAME,self.cart_product_price_after_discount_class)))
+            wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME,self.cart_product_price_after_discount_class)))
             price = self.driver.find_element_by_class_name(self.cart_product_price_after_discount_class).text
         except:
             price = self.driver.find_element_by_class_name(self.cart_product_price_original_class).text
@@ -180,7 +182,8 @@ class CheckoutPage:
         time.sleep(2)
 
     @allure.step('Removing single product from cart')
-    def remove_products_from_the_cart(self):
+    def remove_product_from_the_cart(self):
+        self.logger.info("Removing product from the cart")
         self.driver.find_element_by_class_name(self.cart_delete_product_class_desktop).click()
         allure.attach(self.driver.get_screenshot_as_png(), name='removing product from the cart', attachment_type=AttachmentType.PNG)
         #po klasie nie lapie - lapie po elemencie path
@@ -201,6 +204,19 @@ class CheckoutPage:
         locker_address_checkout = self.driver.find_element_by_class_name(self.cart_shipment_inpost_locker_details_class).text
         locker_address = locker_address.replace('\n',', ')
         return locker_address, locker_address_checkout
+
+    @allure.step('Checking that basket is empty and redirecting to the store homepage')
+    def check_that_basket_is_empty(self):
+        wait = WebDriverWait(self.driver, 5)
+        wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.cart_empty_cart_header_class)))
+        header = self.driver.find_element_by_class_name(self.cart_empty_cart_header_class).text
+        self.logger.info('{}'.format(header))
+        self.logger.info("Redirecting to the store homepage")
+        self.driver.find_element_by_link_text(self.cart_back_to_store_link_text).click()
+        if header == 'Twój koszyk jest pusty':
+            allure.attach(self.driver.get_screenshot_as_png(), name='Empty basket', attachment_type=AttachmentType.PNG)
+            return True
+
 
 
 
