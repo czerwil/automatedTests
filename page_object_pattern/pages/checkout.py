@@ -142,6 +142,7 @@ class CheckoutPage:
         time.sleep(1)
         allure.attach(self.driver.get_screenshot_as_png(), name='next checkout step',
                       attachment_type=AttachmentType.PNG)
+        return self.driver.current_url
 
     @allure.step('Completing delivery data inside checkout')
     def complete_delivery_data(self, delivery_data):
@@ -190,9 +191,9 @@ class CheckoutPage:
     def remove_product_from_the_cart(self):
         self.logger.info("Removing product from the cart")
         self.driver.find_element_by_class_name(self.cart_delete_product_class_desktop).click()
+        time.sleep(0.5)
         allure.attach(self.driver.get_screenshot_as_png(), name='removing product from the cart',
                       attachment_type=AttachmentType.PNG)
-        # po klasie nie lapie - lapie po elemencie path
 
     @allure.step('Setting parcel locker (Paczkomat)')
     def set_parcel_locker(self, locker_name):
@@ -206,9 +207,9 @@ class CheckoutPage:
             (By.CLASS_NAME, self.cart_inpost_map_locker_address_class)))
         locker_address = self.driver.find_element_by_class_name(self.cart_inpost_map_locker_address_class).text
         self.logger.info("Address of the selected locker is: {}".format(locker_address))
-        self.driver.find_element_by_class_name(self.cart_inpost_map_select_class).click()
         allure.attach(self.driver.get_screenshot_as_png(), name='selecting the parcel locker',
                       attachment_type=AttachmentType.PNG)
+        self.driver.find_element_by_class_name(self.cart_inpost_map_select_class).click()
         self.logger.info("Locker has been selected".format(locker_address))
         locker_address_checkout = self.driver.find_element_by_class_name(
             self.cart_shipment_inpost_locker_details_class).text
@@ -223,7 +224,7 @@ class CheckoutPage:
         header = self.driver.find_element_by_class_name(self.cart_empty_cart_header_class).text
         self.logger.info('{}'.format(header))
         self.logger.info("Redirecting to the store homepage")
+        allure.attach(self.driver.get_screenshot_as_png(), name='Empty basket', attachment_type=AttachmentType.PNG)
         self.driver.find_element_by_link_text(self.cart_back_to_store_link_text).click()
         if header == 'Twój koszyk jest pusty':
-            allure.attach(self.driver.get_screenshot_as_png(), name='Empty basket', attachment_type=AttachmentType.PNG)
             return True

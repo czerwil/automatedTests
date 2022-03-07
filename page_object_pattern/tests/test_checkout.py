@@ -55,7 +55,7 @@ class TestCheckout:
         checkout.set_delivery_method(delivery_method)
         locker_address = checkout.set_parcel_locker(locker_name)
         #Adres w pop-upie ma inna kolejnosc niz ten pokazywany w koszyku - czekamy na poprawkie
-        assert locker_address[0] in locker_address[1]
+        assert locker_address[0] in locker_address[1], "Nieprawidłowy adres paczkomatu"
 
     @allure.title('Test of removing product from the basket')
     @allure.description('Adding single product to the basket and then removing it and checking if it is not present')
@@ -66,7 +66,6 @@ class TestCheckout:
         pdp.close_cookies_popup()
         pdp.add_to_basket()
         pdp.go_to_checkout_page()
-        before = checkout.get_product_data()
         checkout.remove_product_from_the_cart()
         assert checkout.check_that_basket_is_empty() == True, "Koszyk nie został opróżniony"
 
@@ -102,15 +101,14 @@ class TestCheckout:
         assert is_product_available != "Produkt niedostępny", "Produkt niedostępny"
         pdp.go_to_checkout_page()
         checkout.use_discount_code('SELLINGO')
-        checkout.set_delivery_method('')
-        checkout.set_payment_method('')
-        value = checkout.check_summary_correctness()
-        print(value)
+        checkout.set_delivery_method('Kurier DHL')
+        checkout.set_payment_method('Przelew')
         checkout.next_step()
         delivery_data = ['Jan', 'Kowalski', 'Szeroka', '14', '01-706', 'Warszawa', '500600900', 'k.czerwinski@netgraf.pl']
         checkout.complete_delivery_data(delivery_data)
         checkout.next_step()
-        checkout.next_step()
+        url = checkout.next_step()
+        assert '/podsumowanie' in url, "Niepoprawny adres, nie udało się złożyć zamówienia"
 
 
 

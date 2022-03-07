@@ -39,6 +39,9 @@ class Homepage:
         self.newsletter_pop_up_text_class = 'l-popup__message-content'
         self.menu_items_class = 'js-menu-1-item'
         self.listing_header_class = 'at-listing-header'
+        self.slider_next_button = 'js-products-slider-1-next'
+        self.slider_previous_button = 'js-products-slider-1-prev'
+        self.homepage_product_title = 'at-product-box-title'
 
     @allure.step('Performing search')
     def perform_search(self,query):
@@ -50,7 +53,7 @@ class Homepage:
 
     @allure.step('Closing the cookies popup')
     def close_cookies_popup(self):
-        self.driver.find_element_by_class_name(self.cookie_popup_accept_class).click()
+        self.driver.find_element_by_class_name(self.cookie_popup_accept_button_class).click()
 
     @allure.step('Trying to subscribe to newsletter with incorrect e-mail address')
     def subscribe_to_newsletter_fail(self, email):
@@ -132,6 +135,26 @@ class Homepage:
         allure.attach(self.driver.get_screenshot_as_png(), name='redirected to the selected menu category',
                       attachment_type=AttachmentType.PNG)
         return selected_item == listing_header
+
+    @allure.step('Clicking slider next button')
+    def slide_forward(self):
+        self.driver.find_element_by_class_name(self.slider_next_button).click()
+        time.sleep(1)
+
+    @allure.step('Clicking slider previous button')
+    def slide_back(self):
+        self.driver.find_element_by_class_name(self.slider_previous_button).click()
+        time.sleep(1)
+
+    @allure.step('Getting actually visible titles of products from slider')
+    def get_products_titles_from_slider(self):
+        titles = self.driver.find_elements_by_class_name(self.homepage_product_title)
+        visible_titles = []
+        for title in titles:
+            if len(title.text) > 0:
+                visible_titles.append(title.text)
+        return visible_titles
+
 
 
 
