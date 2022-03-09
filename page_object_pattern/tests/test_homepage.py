@@ -39,7 +39,7 @@ class TestHomePage:
         is_correct = homepage.select_menu_category(category)
         assert is_correct is True, 'Nie udało się przejść do wybranej pozycji z menu'
 
-    @allure.title('Test of products slider')
+    @allure.title('Test of products slider movement')
     @allure.description('Going to the category which matches passed link-text and checking that header and passed link-text matches')
     def test_products_slider(self, setup):
         self.driver.get('http://testshop.ovel.pl')
