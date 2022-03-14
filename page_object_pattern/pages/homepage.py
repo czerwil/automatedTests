@@ -182,7 +182,7 @@ class Homepage:
                     image.click()
                 except:
                     self.logger.info("Tried to click on not visible banner")
-        allure.attach(self.driver.get_screenshot_as_png(), name='clicked on banner and redirected',
+        allure.attach(self.driver.get_screenshot_as_png(), name='clicked on banner and redirected ',
                       attachment_type=AttachmentType.PNG)
 
 
