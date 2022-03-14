@@ -50,6 +50,18 @@ class TestHomePage:
         titles_after = homepage.get_products_titles_from_slider()
         assert titles_before != titles_after, 'Nie działa slider, produkty się nie przesunęły'
 
+    @allure.title('Test of banner swiper movement')
+    @allure.description('Going through all banners and then clicking on the last one, which should redirect to the specified page')
+    def test_banner_swiper(self, setup):
+        self.driver.get('http://testshop.ovel.pl')
+        homepage = Homepage(self.driver)
+        current_url = self.driver.current_url
+        homepage.close_cookies_popup()
+        homepage.use_banner_swiper()
+        homepage.click_on_visible_banner()
+        new_url = self.driver.current_url
+        assert current_url != new_url, "Nie udało się kliknąć w ostatni banner i przejsć do kategorii"
+
 
 
 

@@ -10,6 +10,7 @@ class DriverFactory:
         if browser == "chrome":
             options = webdriver.ChromeOptions()
             options.add_argument('start-maximized')
+            #options.add_argument('window-size=390,844')
             return webdriver.Chrome(ChromeDriverManager().install(), options=options)
         elif browser == 'firefox':
             options = webdriver.FirefoxOptions()

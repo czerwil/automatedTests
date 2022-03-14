@@ -39,9 +39,13 @@ class Homepage:
         self.newsletter_pop_up_text_class = 'l-popup__message-content'
         self.menu_items_class = 'js-menu-1-item'
         self.listing_header_class = 'at-listing-header'
-        self.slider_next_button = 'js-products-slider-1-next'
-        self.slider_previous_button = 'js-products-slider-1-prev'
-        self.homepage_product_title = 'at-product-box-title'
+        self.slider_next_button_class = 'js-products-slider-1-next'
+        self.slider_previous_button_class = 'js-products-slider-1-prev'
+        self.homepage_product_title_class = 'at-product-box-title'
+        self.homepage_banner_swiper_pagination_bullet_class = 'swiper-pagination-bullet'
+        self.homepage_banner_swiper_pagination_bullet_active_class = 'swiper-pagination-bullet-active'
+        self.homepage_banner_image_class = 'c-banner-element__image'
+
 
     @allure.step('Performing search')
     def perform_search(self,query):
@@ -139,11 +143,15 @@ class Homepage:
     @allure.step('Clicking slider next button')
     def slide_forward(self):
         self.driver.find_element_by_class_name(self.slider_next_button).click()
+        allure.attach(self.driver.get_screenshot_as_png(), name='sliding through product slider',
+                      attachment_type=AttachmentType.PNG)
         time.sleep(1)
 
     @allure.step('Clicking slider previous button')
     def slide_back(self):
         self.driver.find_element_by_class_name(self.slider_previous_button).click()
+        allure.attach(self.driver.get_screenshot_as_png(), name='sliding through product slider',
+                      attachment_type=AttachmentType.PNG)
         time.sleep(1)
 
     @allure.step('Getting actually visible titles of products from slider')
@@ -154,6 +162,42 @@ class Homepage:
             if len(title.text) > 0:
                 visible_titles.append(title.text)
         return visible_titles
+
+    @allure.step('Swiping through banner images')
+    def use_banner_swiper(self):
+        swiper_bullets = self.driver.find_elements_by_class_name(self.homepage_banner_swiper_pagination_bullet_class)
+        for bullet in swiper_bullets:
+            self.logger.info('Swiping to the next banner')
+            bullet.click()
+            time.sleep(0.5)
+            allure.attach(self.driver.get_screenshot_as_png(), name='sliding through banner slider',
+                          attachment_type=AttachmentType.PNG)
+
+    @allure.step('Clicking on currently visible banner')
+    def click_on_visible_banner(self):
+        banner_images = self.driver.find_elements_by_class_name(self.homepage_banner_image_class)
+        for image in banner_images:
+            if image.is_displayed():
+                try:
+                    image.click()
+                except:
+                    self.logger.info("Tried to click on not visible banner")
+        allure.attach(self.driver.get_screenshot_as_png(), name='clicked on banner and redirected',
+                      attachment_type=AttachmentType.PNG)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
