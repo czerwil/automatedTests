@@ -8,10 +8,21 @@ class DriverFactory:
     @staticmethod
     def get_driver(browser):
         if browser == "chrome":
+            capabilities = {
+                "browserName": "chrome",
+                "browserVersion": "99.0",
+                "selenoid:options": {
+                    "enableVNC": True,
+                    "enableVideo": False
+                }
+            }
             options = webdriver.ChromeOptions()
             options.add_argument('start-maximized')
-            #options.add_argument('window-size=390,844')
-            return webdriver.Chrome(ChromeDriverManager().install(), options=options)
+            driver = webdriver.Remote(
+                command_executor="http://devsel.sellingo.pl:4444/wd/hub",
+                desired_capabilities=capabilities,
+                options=options)
+            return driver
         elif browser == 'firefox':
             options = webdriver.FirefoxOptions()
             options.add_argument('start-maximized')

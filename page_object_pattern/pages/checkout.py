@@ -97,7 +97,6 @@ class CheckoutPage:
                 method.click()
         allure.attach(self.driver.get_screenshot_as_png(), name='delivery method has been set',
                       attachment_type=AttachmentType.PNG)
-        return delivery_methods_names
 
     @allure.step('Setting passed payment method')
     def set_payment_method(self, payment='test'):
