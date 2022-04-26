@@ -6,6 +6,7 @@ from allure_commons.types import AttachmentType
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.relative_locator import locate_with
 
 
 class CheckoutPage:
@@ -162,7 +163,8 @@ class CheckoutPage:
         self.driver.find_element_by_name(self.phone_input_name).send_keys(delivery_data[6])
         self.logger.info('Setting email to: {}'.format(delivery_data[7]))
         self.driver.find_element_by_name(self.email_input_name).send_keys(delivery_data[7])
-        self.driver.find_element_by_class_name(self.rules_acceptation_checkbox_class).click()
+        self.driver.find_element(locate_with(By.CLASS_NAME, self.rules_acceptation_checkbox_class).below({By.TAG_NAME: "textarea"})).click()
+        # Relative locators to nowinka, nie ma o niej wspomniane w kursie - obczaj sobie https://www.selenium.dev/documentation/webdriver/elements/locators/
         allure.attach(self.driver.get_screenshot_as_png(), name='delivery data has been send',
                       attachment_type=AttachmentType.PNG)
 

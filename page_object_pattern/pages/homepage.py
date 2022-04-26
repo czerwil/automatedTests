@@ -26,7 +26,7 @@ class Homepage:
         self.news_container_class = 'm-news-panel-1__box'
         self.cookie_popup_accept_button_class = 'js-accept-cookie-alert-1'
         self.newsletter_alert_span_xpath = '//*[@id="modal-aside-newsletter"]/div[2]/div[2]/div/form/label/span'
-        #Dodać klasy inputów z danymi do logowania/rejestracji
+        # Dodać klasy inputów z danymi do logowania/rejestracji
         self.login_form_email_input_name = 'email'
         self.login_form_password_input_name = 'password'
         self.login_form_confirm_password_input_name = 'password_confirm'
@@ -46,9 +46,8 @@ class Homepage:
         self.homepage_banner_swiper_pagination_bullet_active_class = 'swiper-pagination-bullet-active'
         self.homepage_banner_image_class = 'c-banner-element__image'
 
-
     @allure.step('Performing search')
-    def perform_search(self,query):
+    def perform_search(self, query):
         self.logger.info('Performing search of: {}'.format(query))
         self.driver.find_element_by_id(self.search_query_id).click()
         self.driver.find_element_by_id(self.search_query_id).send_keys(query + Keys.ENTER)
@@ -75,13 +74,13 @@ class Homepage:
 
     @allure.step('Trying to subscribe to newsletter with correct e-mail address')
     def subscribe_to_newsletter_success(self, email):
-        wait = WebDriverWait(self.driver,3)
+        wait = WebDriverWait(self.driver, 3)
         self.logger.info("Subscribing for newsletter:")
         self.logger.info("Sending email address{}".format(email))
         self.driver.find_element_by_class_name(self.newsletter_email_input_class).send_keys(email)
         self.logger.info("Clicking subscribe button")
         self.driver.find_element_by_class_name(self.newsletter_submit_button_class).click()
-        wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME,self.newsletter_pop_up_class)))
+        wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, self.newsletter_pop_up_class)))
         pop_up_text = self.driver.find_element_by_class_name(self.newsletter_pop_up_text_class).text
         self.logger.info("Got message: {}".format(pop_up_text))
         allure.attach(self.driver.get_screenshot_as_png(), name='subscribed to newsletter',
@@ -121,12 +120,12 @@ class Homepage:
 
     @allure.step('Selecting passed category on header menu')
     def select_menu_category(self, category):
-        wait = WebDriverWait(self.driver,3)
+        wait = WebDriverWait(self.driver, 3)
         menu_items = self.driver.find_elements_by_class_name(self.menu_items_class)
         menu_items_names = []
         for item in menu_items:
             menu_items_names.append(item.text)
-        self.logger.info('There are {} menu items: {}'.format(len(menu_items),menu_items_names))
+        self.logger.info('There are {} menu items: {}'.format(len(menu_items), menu_items_names))
         for item in menu_items:
             if item.text == category:
                 self.logger.info('Clicking on {}'.format(item.text))
@@ -142,21 +141,21 @@ class Homepage:
 
     @allure.step('Clicking slider next button')
     def slide_forward(self):
-        self.driver.find_element_by_class_name(self.slider_next_button).click()
+        self.driver.find_element_by_class_name(self.slider_next_button_class).click()
         allure.attach(self.driver.get_screenshot_as_png(), name='sliding through product slider',
                       attachment_type=AttachmentType.PNG)
         time.sleep(1)
 
     @allure.step('Clicking slider previous button')
     def slide_back(self):
-        self.driver.find_element_by_class_name(self.slider_previous_button).click()
+        self.driver.find_element_by_class_name(self.slider_previous_button_class).click()
         allure.attach(self.driver.get_screenshot_as_png(), name='sliding through product slider',
                       attachment_type=AttachmentType.PNG)
         time.sleep(1)
 
     @allure.step('Getting actually visible titles of products from slider')
     def get_products_titles_from_slider(self):
-        titles = self.driver.find_elements_by_class_name(self.homepage_product_title)
+        titles = self.driver.find_elements_by_class_name(self.homepage_product_title_class)
         visible_titles = []
         for title in titles:
             if len(title.text) > 0:
@@ -182,36 +181,7 @@ class Homepage:
                     image.click()
                 except:
                     self.logger.info("Tried to click on not visible banner")
+            else:
+                self.logger.info("niewidoczny banner")
         allure.attach(self.driver.get_screenshot_as_png(), name='clicked on banner and redirected ',
                       attachment_type=AttachmentType.PNG)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

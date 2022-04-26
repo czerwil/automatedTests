@@ -17,7 +17,7 @@ class TestWishlist:
     @allure.title('Test of adding product from pdp to the wishlist')
     @allure.description('Adding product to wishlist from the product detail page')
     def test_add_product_to_wishlist(self, setup):
-        self.driver.get('http://testshop.ovel.pl/sabi')
+        self.driver.get('http://tests-harmony.devsel.pl/p/10/386/sabi')
         pdp = ProductDetailPage(self.driver)
         wishlist = WishlistPage(self.driver)
         pdp.close_cookies_popup()
@@ -32,7 +32,7 @@ class TestWishlist:
     @allure.title('Test of adding product from wishlist to the basket')
     @allure.description('Adding product to wishlist and then going to the wishlist page and adding product from there to the basket')
     def test_add_product_do_card_from_wishlist(self, setup):
-        self.driver.get('http://testshop.ovel.pl/sabi')
+        self.driver.get('http://tests-harmony.devsel.pl/p/10/386/sabi')
         pdp = ProductDetailPage(self.driver)
         wishlist = WishlistPage(self.driver)
         pdp.close_cookies_popup()

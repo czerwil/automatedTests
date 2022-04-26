@@ -1,9 +1,11 @@
-# testyAutomatyczne
-Testy automatyczne sklepu internetowego na oprogramowaniu Sellingo.
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Selenium_logo.svg/1280px-Selenium_logo.svg.png" alt="selenium" width="700" height="180">
+
+<h1> testyAutomatyczne</h1>
+Testy automatyczne UI sklepu internetowego na oprogramowaniu Sellingo na skórce Harmony (Prototype).
 
 #Uruchomienie testów
 1. Uruchomienie wszystkich testów
-   1. Wykonujemy polecenie <b>$ pytest</b> w katalogu <i>tests</i>, gdzie znajdują się wszystkie testy
+   1. Wykonujemy polecenie <b>$ pytest</b> znajdując się w katalogu <i>tests</i>, gdzie znajdują się wszystkie testy
 2. Uruchomienie wybranego zestawu testów
    1. Wykonujemy polecenie <b>$ pytest nazwa_pliku.py</b>, przykładowo <b> pytest test_listing.py</b> znajdując się w katalogu <i>tests</i>
 3. Uruchomienie testów wraz z generowaniem danych do raportu allure
@@ -16,6 +18,21 @@ Testy automatyczne sklepu internetowego na oprogramowaniu Sellingo.
 2. Przechodzimy do zakładki <a href="http://devsel.sellingo.pl:8080/#/capabilities/">capabilities</a>
 3. Wybieramy interesujący nas set, czyli przykładowo <b>chrome: 100.0</b> oraz <b>python</b>
 4. Kopiujemy kod i wklejamy do pliku <i>driver_factory.py</i> - trzeba tam trochę to zmodyfikować, żeby było zgodne z patternem jak przy już istniejących opcjach
-5. W pliku <i>conftest.py</i> w pierwszej linii funkcji <b>setup</b> dajemy nazwę naszej opcji, przykładowo <b>chrome</b> albo <b>firefox</b> 
+5. Wartość argumentu <b>command_executor</b> ustawiamy na <b>http://devsel.sellingo.pl:4444/wd/hub </b> - to tam przekierowywane będzie zdalne wykonanie testów
+6. W pliku <i>conftest.py</i> w pierwszej linii funkcji <b>setup</b> dajemy nazwę naszej opcji, przykładowo <b>chrome</b> albo <b>firefox</b> 
 
-        
+#Wymagania
+1. Python 3.7 lub nowszy  -> https://www.python.org/downloads/
+2. Selenium w wersji 4 lub nowszej -> https://pypi.org/project/selenium/
+3. Pytest -> https://docs.pytest.org/en/7.1.x/getting-started.html
+4. Allure -> https://docs.qameta.io/allure/ https://pypi.org/project/allure-pytest/
+   1. Do korzystania z allure potrzeba JRE i JDK -> https://www.oracle.com/java/technologies/downloads/ oraz https://java.com/pl/download/manual.jsp
+5. Przy Selenium w wersji 4.2 (jeszcze nie nadeszło :D) zmienią się metody lokalizowania elementów na stronie i będzie trzeba zmienić trochę kod (z tego, co widze to nic wielkiego/trudnego, ale trzeba poswiecic na to troche czasu) -> https://www.selenium.dev/blog/2022/python-locators-se4/
+
+#Uruchamianie kilku testów jednocześnie (parallel testing)
+Tego nie udało mi się wdrożyć. Dało by to możliwość uruchamiania kilku testów jednocześnie obok siebie (czyli np. testy jednocześnie na kilku różnych przeglądarkach). Warto byłoby się temu bliżej przyjrzeć
+i wdrożyć to. Tutaj znajduje się pomocny artykuł -> https://www.lambdatest.com/blog/pytest-tutorial-parallel-testing-with-selenium-grid/ 
+Obecnie zestaw testów po wpisaniu komendy <b>pytest</b> będzie uruchamiał się na ustawionej w pliku <b>conftest.py</b> konfiguracji (argument przekazany w metodzie getDriver() będzie porównywany w pliku <b>driver_factory.py</b> i na tej podstawie będą uruchamiane testy w Selenoidzie).
+
+Jeśli będą jakieś pytania to proszę o kontaktowanie się ze mną pod adresem e-mail <a href="mailto:konradczerwinski@icloud.com">konradczerwinski@icloud.com</a> albo na firmowym Slacku (jeśli moje konto nie zostanie usunięte to będę tam zaglądał czasem z telefonu).
+

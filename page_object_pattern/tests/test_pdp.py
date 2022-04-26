@@ -15,7 +15,7 @@ class TestProductDetailPage:
     @allure.title('Test of adding single product to the basket')
     @allure.description("Adding single product from product detail page to the basket")
     def test_add_single_product_to_basket(self, setup):
-        self.driver.get('http://testshop.ovel.pl/sabi')
+        self.driver.get('http://tests-harmony.devsel.pl/p/10/386/sabi')
         pdp = ProductDetailPage(self.driver)
         basket = CheckoutPage(self.driver)
         pdp.close_cookies_popup()
@@ -28,7 +28,7 @@ class TestProductDetailPage:
     @allure.title('Test of adding new opinion')
     @allure.description('Writing and sending opinion of product')
     def test_write_opinion(self, setup):
-        self.driver.get('http://testshop.ovel.pl/sabi')
+        self.driver.get('http://tests-harmony.devsel.pl/p/10/386/sabi')
         pdp = ProductDetailPage(self.driver)
         pdp.close_cookies_popup()
         pdp.add_opinion('Konrad', 'Polecam', randrange(1, 5))
@@ -38,7 +38,7 @@ class TestProductDetailPage:
     @allure.title('Test of opinion paginations')
     @allure.description('Paginating through all opinions pages')
     def test_opinion_pagination(self, setup):
-        self.driver.get('http://testshop.ovel.pl/sabi')
+        self.driver.get('http://tests-harmony.devsel.pl/p/10/386/sabi')
         pdp = ProductDetailPage(self.driver)
         pdp.close_cookies_popup()
         pages = pdp.pagination_of_opinions()
@@ -47,7 +47,7 @@ class TestProductDetailPage:
     @allure.title('Test of setting option')
     @allure.description('Selecting image option of the product')
     def test_select_option(self, setup):
-        self.driver.get('http://testshop.ovel.pl/k089-1')
+        self.driver.get('http://tests-harmony.devsel.pl/p/10/336/k089-1')
         pdp = ProductDetailPage(self.driver)
         pdp.close_cookies_popup()
         options = pdp.set_option()

@@ -13,7 +13,7 @@ class TestHomePage:
     @allure.title('Test of newsletter subscription using correct e-mail address')
     @allure.description('Sending correct e-mail address and checking that pop-up comes up')
     def test_newsletter_subscribe_success(self, setup):
-        self.driver.get('http://testshop.ovel.pl')
+        self.driver.get('http://tests-harmony.devsel.pl/')
         homepage = Homepage(self.driver)
         homepage.close_cookies_popup()
         email_address = 'test@test.com'
@@ -23,7 +23,7 @@ class TestHomePage:
     @allure.title('Test of newsletter subscription using incorrect e-mail address')
     @allure.description('Sending incorrect e-mail address and checking for an alert')
     def test_newsletter_subscribe_wrong_email(self, setup):
-        self.driver.get('http://testshop.ovel.pl')
+        self.driver.get('http://tests-harmony.devsel.pl/')
         homepage = Homepage(self.driver)
         homepage.close_cookies_popup()
         email_address = 'testtest.com'
@@ -33,16 +33,16 @@ class TestHomePage:
     @allure.title('Test of going to specified category from header menu')
     @allure.description('Going to the category which matches passed link-text and checking that header and passed link-text matches')
     def test_menu_category_selection(self, setup):
-        self.driver.get('http://testshop.ovel.pl')
+        self.driver.get('http://tests-harmony.devsel.pl/')
         homepage = Homepage(self.driver)
-        category = 'spodnie'
+        category = 'dodatki'
         is_correct = homepage.select_menu_category(category)
         assert is_correct is True, 'Nie udało się przejść do wybranej pozycji z menu'
 
     @allure.title('Test of products slider movement')
     @allure.description('Going to the category which matches passed link-text and checking that header and passed link-text matches')
     def test_products_slider(self, setup):
-        self.driver.get('http://testshop.ovel.pl')
+        self.driver.get('http://tests-harmony.devsel.pl/')
         homepage = Homepage(self.driver)
         homepage.close_cookies_popup()
         titles_before = homepage.get_products_titles_from_slider()
@@ -53,7 +53,7 @@ class TestHomePage:
     @allure.title('Test of banner swiper movement')
     @allure.description('Going through all banners and then clicking on the last one, which should redirect to the specified page')
     def test_banner_swiper(self, setup):
-        self.driver.get('http://testshop.ovel.pl')
+        self.driver.get('http://tests-harmony.devsel.pl/')
         homepage = Homepage(self.driver)
         current_url = self.driver.current_url
         homepage.close_cookies_popup()

@@ -23,9 +23,11 @@ class DriverFactory:
                 desired_capabilities=capabilities,
                 options=options)
             return driver
+
         elif browser == 'chrome_local':
             options = webdriver.ChromeOptions()
             options.add_argument('start-maximized')
             return webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=options)
+
         raise Exception("Provide valid driver name")
 
