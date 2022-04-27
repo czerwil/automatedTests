@@ -29,5 +29,18 @@ class DriverFactory:
             options.add_argument('start-maximized')
             return webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=options)
 
+        elif browser == 'firefox':
+            capabilities = {
+                "browserName": "firefox",
+                "browserVersion": "98.0",
+                "selenoid:options": {
+                    "enableVNC": True,
+                    "enableVideo": False
+                }
+            }
+
+            driver = webdriver.Remote(
+                command_executor="http://selenoid:4444/wd/hub",
+                desired_capabilities=capabilities)
         raise Exception("Provide valid driver name")
 

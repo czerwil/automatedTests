@@ -10,7 +10,7 @@ Testy automatyczne UI sklepu internetowego na oprogramowaniu Sellingo na skórce
    1. Wykonujemy polecenie <b>$ pytest nazwa_pliku.py</b>, przykładowo <b> pytest test_listing.py</b> znajdując się w katalogu <i>tests</i>
 3. Uruchomienie testów wraz z generowaniem danych do raportu allure
    1. Wykonujemy polecenie <b>$ py.test --alluredir=%ścieżka_katalogu_na_pliki% </b>
-   2. Aby uruchomić raport wykonujemy polecenie <b>$ allure serve %ścieżka_katalogu_z_plikami%</b>
+   2. Aby wyświetlić raport wykonujemy polecenie <b>$ allure serve %ścieżka_katalogu_z_plikami%</b>
    3. Przed kolejnym procesem dobrze byłoby usunąć stare pliki i powtórzyć kroki 1 i 2.
 
 #Przekazywanie testów do wykonania zdalnego
@@ -34,5 +34,13 @@ Tego nie udało mi się wdrożyć. Dało by to możliwość uruchamiania kilku t
 i wdrożyć to. Tutaj znajduje się pomocny artykuł -> https://www.lambdatest.com/blog/pytest-tutorial-parallel-testing-with-selenium-grid/ 
 Obecnie zestaw testów po wpisaniu komendy <b>pytest</b> będzie uruchamiał się na ustawionej w pliku <b>conftest.py</b> konfiguracji (argument przekazany w metodzie getDriver() będzie porównywany w pliku <b>driver_factory.py</b> i na tej podstawie będą uruchamiane testy w Selenoidzie).
 
-Jeśli będą jakieś pytania to proszę o kontaktowanie się ze mną pod adresem e-mail <a href="mailto:konradczerwinski@icloud.com">konradczerwinski@icloud.com</a> albo na firmowym Slacku (jeśli moje konto nie zostanie usunięte to będę tam zaglądał czasem z telefonu).
+#Inne informacje
 
+Szczegóły dotyczące testów oraz metod w nich użytych znajdują się w plikach <b>Spis testów</b> oraz <b> Opis metod</b>. Testy są pisane według wzorca Page Object Pattern, który przynosi wymierne korzyści w utrzymaniu testów (przykładowo, gdy na skórce coś się zmieni i będzie trzeba zmienić jeden lokalizator to wystarczy go zmienić tylko w jednym miejscu w objekcie page, a nie we wszystkich testach, gdzie taki lokalizator byłby wpisany na sztywno). Mamy dwa główne katalogi: <i>pages</i> oraz <i>tests</i>. W katalogu <i>pages</i> 
+znajdują się pliki odpowiadające stronom na sklepie, przykładowo listing, czy koszyk. W plikach znajdują się lokalizatory do elementów strony oraz metody, które są wykorzystywane przez testy. W katalogu <i> tests</i> znajdują się pliki z testami. Ogólnie przyjąłem zasadę, że jest jeden plik na jeden obszar sklepu, ale są wyjątki. W plikach z testami znajdują się przypadki testowe wraz z opisem, gdzie nawet osoba nietechniczna może zobaczyć mniej więcej, co dzieje się w teście. Co do testów to staram się zachować zasadę 1 asercja na 1 test, gdzie każdy test ma sprawdzić, czy konkretna funkcjonalność sklepu działa poprawnie, czyli na przykład w teście dodania do koszyka sprawdzam asercją, czy produkt, który dodałem do koszyka z karty produktu się w nim znajduje.
+
+Jeśli będą jakieś pytania to proszę o kontaktowanie się ze mną
+pod adresem e-mail 
+<a href="mailto:konradczerwinski@icloud.com">konradczerwinski@icloud.com</a>
+albo na firmowym Slacku (jeśli moje konto nie zostanie usunięte to będę 
+tam zaglądał czasem z telefonu).
